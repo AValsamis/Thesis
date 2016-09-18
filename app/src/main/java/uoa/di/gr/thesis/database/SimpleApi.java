@@ -14,7 +14,8 @@ public interface SimpleApi
     public static final String BASE_URL = "http://147.102.19.120:8080/api";
 
     @POST(Constants.URL_USERS)
-    void testApi(@Body AccelerometerStats accelerometerStats, Callback<String> cb);
+    //void testApi(@Body String string, Callback<String> cb);
+     void testApi(@Body AccelerometerStats accelerometerStats, Callback<String> cb);
 
     /*(@GET(Constants.URL_EVENTS)
     void getEvents(Callback<List<Event>> dataCallback);
