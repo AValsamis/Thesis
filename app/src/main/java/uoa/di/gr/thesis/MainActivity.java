@@ -1,5 +1,12 @@
 package uoa.di.gr.thesis;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
@@ -11,7 +18,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.List;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -36,12 +46,32 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onClick(View view) {
-                AccelerometerStats accelerometerStats = new AccelerometerStats("x","y","z");
 
+             /*   IntentFilter i = new IntentFilter();
+                i.addAction (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+                registerReceiver(new BroadcastReceiver(){
+                    public void onReceive(Context c, Intent i){
+                        // Code to execute when SCAN_RESULTS_AVAILABLE_ACTION event occurs
+                        WifiManager w = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
+                        presentResults(w.getScanResults()); // your method to handle Scan results
+                        if (true) w.startScan(); // relaunch scan immediately
+                        else { /* Schedule the scan to be run later here }
+                    }
+                }, i );
+
+
+                // Launch  wifiscanner the first time here (it will call the broadcast receiver above)
+                WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+                boolean a = wm.startScan();
+
+
+
+
+            }});*/
                 final CallbacksManager.CancelableCallback<String> callback = callbacksManager.new CancelableCallback<String>() {
                     @Override
-                    protected void onSuccess(String accelerometerStats, Response response2) {
-                        Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
+                    protected void onSuccess(String response, Response response2) {
+                        Toast.makeText(getApplicationContext(), "Success! " + response, Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -49,10 +79,9 @@ public class MainActivity extends AppCompatActivity
                         Toast.makeText(getApplicationContext(), "Process failed, please try later." + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 };
-                apiFor(callback).testApi(accelerometerStats, callback);
+                apiFor(callback).registerUser("Sevle","ang","val","1234", callback);
             }
         });
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -64,6 +93,22 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    protected void presentResults(List<ScanResult> wifiList){
+        TextView textView = (TextView) findViewById(R.id.textViewAxtarmas);
+        textView.setText("");
+        String s = "";
+        // Level of a Scan Result
+        for (ScanResult scanResult : wifiList) {
+            int level = WifiManager.calculateSignalLevel(scanResult.level, 5);
+            //s=s.concat("Level is " + level + " out of 5\n");
+            s=s.concat(scanResult.SSID +": Level is " + scanResult.BSSID +" "+scanResult.level + " out of 5");
+            System.out.println(scanResult.SSID +": Level is " + scanResult.BSSID +" "+scanResult.level + " out of 5");
+
+        }
+
+
+        textView.setText(s);
+    }
     protected SimpleApi apiFor(CallbacksManager.CancelableCallback<?> callback) {
         callbacksManager.addCallback(callback);
         // return your retrofit API

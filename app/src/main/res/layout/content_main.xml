@@ -9,7 +9,9 @@
     tools:context="uoa.di.gr.thesis.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+
     <TextView
+        android:id="@+id/textViewAxtarmas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"

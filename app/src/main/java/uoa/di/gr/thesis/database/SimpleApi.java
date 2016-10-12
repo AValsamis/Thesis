@@ -6,17 +6,22 @@ package uoa.di.gr.thesis.database;
 
 import retrofit.Callback;
 import retrofit.http.Body;
+import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.Path;
 import uoa.di.gr.thesis.entities.AccelerometerStats;
 
 public interface SimpleApi
 {
-    public static final String BASE_URL = "http://147.102.19.120:8080/api";
+    public static final String BASE_URL = "http://85.74.171.58:8080/";
+
 
     @POST(Constants.URL_USERS)
     //void testApi(@Body String string, Callback<String> cb);
      void testApi(@Body AccelerometerStats accelerometerStats, Callback<String> cb);
 
+    @GET(Constants.URL_REGISTER)
+    void registerUser(@Path("username") String usermame,@Path("name") String name,@Path("surname") String surname, @Path("password") String password, Callback<String> cb);
     /*(@GET(Constants.URL_EVENTS)
     void getEvents(Callback<List<Event>> dataCallback);
 
