@@ -1,24 +1,34 @@
 package uoa.di.gr.thesis.entities;
 
+import com.google.gson.annotations.Expose;
+
 /**
  * Created by Sevle on 9/23/2016.
  */
 public class Wifi {
 
-    private String MacAddress;
-    private String name;
+    @Expose
+    private Long wifiId;
+    @Expose
+    private String macAddress = "";
+    @Expose
+    private String name = "";
 
-    public Wifi(String macAddress, String name) {
-        MacAddress = macAddress;
+    public Wifi() {
+    }
+
+    public Wifi(Long wifiId, String macAddress, String name) {
+        this.wifiId = wifiId;
+        this.macAddress = macAddress;
         this.name = name;
     }
 
     public String getMacAddress() {
-        return MacAddress;
+        return macAddress;
     }
 
     public void setMacAddress(String macAddress) {
-        MacAddress = macAddress;
+        this.macAddress = macAddress;
     }
 
     public String getName() {
@@ -29,10 +39,19 @@ public class Wifi {
         this.name = name;
     }
 
+    public Long getWifiId() {
+        return wifiId;
+    }
+
+    public void setWifiId(Long wifiId) {
+        this.wifiId = wifiId;
+    }
+
     @Override
     public String toString() {
         return "Wifi{" +
-                "MacAddress='" + MacAddress + '\'' +
+                "wifiId=" + wifiId +
+                ", macAddress='" + macAddress + '\'' +
                 ", name='" + name + '\'' +
                 '}';
     }

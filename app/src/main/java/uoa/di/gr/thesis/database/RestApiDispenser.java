@@ -8,6 +8,7 @@ import com.squareup.okhttp.OkHttpClient;
 
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
+import retrofit.android.AndroidLog;
 import retrofit.client.OkClient;
 import retrofit.converter.GsonConverter;
 
@@ -55,6 +56,7 @@ public class RestApiDispenser {
                 .excludeFieldsWithoutExposeAnnotation()
                 .create();
 
+        builder.setLogLevel(RestAdapter.LogLevel.FULL).setLog(new AndroidLog("YOUR_LOG_TAG"));
         RestAdapter adapter = builder.setConverter(new GsonConverter(gson)).build();
 
         return adapter.create(serviceClass);

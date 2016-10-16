@@ -10,12 +10,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit.RetrofitError;
@@ -23,6 +29,9 @@ import retrofit.client.Response;
 import uoa.di.gr.thesis.R;
 import uoa.di.gr.thesis.database.RestApiDispenser;
 import uoa.di.gr.thesis.database.SimpleApi;
+import uoa.di.gr.thesis.entities.User;
+import uoa.di.gr.thesis.entities.Wifi;
+import uoa.di.gr.thesis.entities.Zone;
 import uoa.di.gr.thesis.utils.CallbacksManager;
 
 public class MainActivity extends AppCompatActivity
@@ -74,7 +83,54 @@ public class MainActivity extends AppCompatActivity
                         Toast.makeText(getApplicationContext(), "Process failed, please try later." + error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 };
-                apiFor(callback).registerUser("Sevle","ang","val","1234", callback);
+
+                final CallbacksManager.CancelableCallback<String> callback2 = callbacksManager.new CancelableCallback<String>() {
+                    @Override
+                    protected void onSuccess(String response, Response response2) {
+                        Toast.makeText(getApplicationContext(), "Success! " + response, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    protected void onFailure(RetrofitError error) {
+                        BufferedReader reader = null;
+                        StringBuilder sb = new StringBuilder();
+                        try {
+                            reader = new BufferedReader(new InputStreamReader(error.getResponse().getBody().in()));
+
+                            String line;
+
+                            try {
+                                while ((line = reader.readLine()) != null) {
+                                    Toast.makeText(getApplicationContext(), "Success! " + sb.append(line), Toast.LENGTH_LONG).show();
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+
+//                apiFor(callback).registerUser("Sevle3","ang3","val3","12343", callback);
+
+                    List <Zone> zones = new ArrayList<Zone>();
+                    Zone zone = new Zone();
+                    zone.setSignalStrength(12.2);
+                    User user = new User();
+                    user.setId(4L);
+                    user.setUsername("Sevle3");
+                    user.setName("ang3");
+                    user.setSurname("val3");
+                    user.setPassword("12343");
+                    zone.setUser(user);
+                    Wifi wifi = new Wifi();
+                    wifi.setName("testWifi");
+                    wifi.setMacAddress("testMacAddress");
+                    zone.setWifi(wifi);
+                    zones.add(zone);
+                    Log.i("ZONES",zones.get(0).toString());
+                    apiFor(callback2).registerDangerZone(zones, callback2);
             }
         });
 

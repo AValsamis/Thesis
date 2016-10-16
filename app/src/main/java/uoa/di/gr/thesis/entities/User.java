@@ -1,17 +1,23 @@
 package uoa.di.gr.thesis.entities;
 
+import com.google.gson.annotations.Expose;
+
 /**
  * Created by Angelos on 9/18/2016.
  */
 
 public class User {
 
-
+    @Expose
     private Long id;
-    private String username;
-    private String name;
-    private String surname;
-    private String password;
+    @Expose
+    private String username = "";
+    @Expose
+    private String name = "";
+    @Expose
+    private String surname = "";
+    @Expose
+    private String password = "";
 
     public User(){}
 

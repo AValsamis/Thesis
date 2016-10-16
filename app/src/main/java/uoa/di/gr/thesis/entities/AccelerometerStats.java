@@ -6,11 +6,11 @@ package uoa.di.gr.thesis.entities;
 
 public class AccelerometerStats {
 
-    private String x;
+    private String x = "";
 
-    private String y;
+    private String y = "";
 
-    private String z;
+    private String z = "";
 
     public AccelerometerStats() {
     }
