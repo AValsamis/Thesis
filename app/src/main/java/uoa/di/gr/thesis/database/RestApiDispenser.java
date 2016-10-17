@@ -56,7 +56,7 @@ public class RestApiDispenser {
                 .excludeFieldsWithoutExposeAnnotation()
                 .create();
 
-        builder.setLogLevel(RestAdapter.LogLevel.FULL).setLog(new AndroidLog("YOUR_LOG_TAG"));
+        builder.setLogLevel(RestAdapter.LogLevel.FULL).setLog(new AndroidLog("HTTPLOGGER"));
         RestAdapter adapter = builder.setConverter(new GsonConverter(gson)).build();
 
         return adapter.create(serviceClass);

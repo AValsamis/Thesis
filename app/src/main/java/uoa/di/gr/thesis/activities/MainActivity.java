@@ -17,6 +17,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.okhttp.ResponseBody;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,6 +31,7 @@ import retrofit.client.Response;
 import uoa.di.gr.thesis.R;
 import uoa.di.gr.thesis.database.RestApiDispenser;
 import uoa.di.gr.thesis.database.SimpleApi;
+import uoa.di.gr.thesis.entities.SimpleResponse;
 import uoa.di.gr.thesis.entities.User;
 import uoa.di.gr.thesis.entities.Wifi;
 import uoa.di.gr.thesis.entities.Zone;
@@ -84,31 +87,17 @@ public class MainActivity extends AppCompatActivity
                     }
                 };
 
-                final CallbacksManager.CancelableCallback<String> callback2 = callbacksManager.new CancelableCallback<String>() {
+                final CallbacksManager.CancelableCallback<SimpleResponse> callback2 = callbacksManager.new CancelableCallback<SimpleResponse>() {
                     @Override
-                    protected void onSuccess(String response, Response response2) {
-                        Toast.makeText(getApplicationContext(), "Success! " + response, Toast.LENGTH_SHORT).show();
+                    protected void onSuccess(SimpleResponse response, Response response2) {
+                            Toast.makeText(getApplicationContext(), "Success! " + response.getResponse(), Toast.LENGTH_SHORT).show();
+
                     }
 
                     @Override
                     protected void onFailure(RetrofitError error) {
-                        BufferedReader reader = null;
-                        StringBuilder sb = new StringBuilder();
-                        try {
-                            reader = new BufferedReader(new InputStreamReader(error.getResponse().getBody().in()));
 
-                            String line;
-
-                            try {
-                                while ((line = reader.readLine()) != null) {
-                                    Toast.makeText(getApplicationContext(), "Success! " + sb.append(line), Toast.LENGTH_LONG).show();
-                                }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        Toast.makeText(getApplicationContext(), error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                     }
                 };
 
@@ -125,8 +114,8 @@ public class MainActivity extends AppCompatActivity
                     user.setPassword("12343");
                     zone.setUser(user);
                     Wifi wifi = new Wifi();
-                    wifi.setName("testWifi");
-                    wifi.setMacAddress("testMacAddress");
+                    wifi.setName("testWifi2");
+                    wifi.setMacAddress("testMacAddress2");
                     zone.setWifi(wifi);
                     zones.add(zone);
                     Log.i("ZONES",zones.get(0).toString());
