@@ -15,16 +15,25 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import uoa.di.gr.thesis.R;
+import uoa.di.gr.thesis.database.RestApiDispenser;
+import uoa.di.gr.thesis.database.SimpleApi;
+import uoa.di.gr.thesis.entities.SimpleResponse;
+import uoa.di.gr.thesis.entities.User;
 import uoa.di.gr.thesis.interfaces.SignupFragmentCallbacks;
+import uoa.di.gr.thesis.utils.CallbacksManager;
 
 
 public class SignupFragment extends DialogFragment implements SignupFragmentCallbacks{
     public static final String TAG = SignupFragment.class.getSimpleName();
+    protected final CallbacksManager callbacksManager = new CallbacksManager();
+
     private SignupFragmentCallbacks mCallback;
 
     EditText _nameText;
-    EditText _emailText;
+    EditText _usernameText;
     EditText _passwordText;
     Button _signupButton;
     TextView _loginLink;
@@ -46,7 +55,7 @@ public class SignupFragment extends DialogFragment implements SignupFragmentCall
         View v = inflater.inflate(R.layout.fragment_signup, container, false);
 
         _nameText = (EditText) v.findViewById(R.id.input_name);
-        _emailText = (EditText) v.findViewById(R.id.input_email);
+        _usernameText = (EditText) v.findViewById(R.id.input_username);
         _passwordText = (EditText) v.findViewById(R.id.input_password);
         _signupButton = (Button) v.findViewById(R.id.btn_signup);
         _loginLink = (TextView) v.findViewById(R.id.link_login);
@@ -118,7 +127,7 @@ public class SignupFragment extends DialogFragment implements SignupFragmentCall
         Log.d(TAG, "Signup");
 
         if (!validate()) {
-            onSignupFailed();
+            onSignupFailed("Correct errors in form and try again");
             return;
         }
 
@@ -132,21 +141,28 @@ public class SignupFragment extends DialogFragment implements SignupFragmentCall
         progressDialog.show();
 
         String name = _nameText.getText().toString();
-        String email = _emailText.getText().toString();
+        String username = _usernameText.getText().toString();
         String password = _passwordText.getText().toString();
 
         // TODO: Implement your own signup logic here.
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        mCallback.onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+        final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
+            @Override
+            protected void onSuccess(SimpleResponse response, Response response2) {
+                System.out.println(response.getResponse());
+                if (response.getIsOk())
+                    onSignupSuccess();
+                else
+                    onSignupFailed(response.getResponse());
+                progressDialog.dismiss();
+            }
+            @Override
+            protected void onFailure(RetrofitError error) {
+                onSignupFailed(error.getResponse().getReason());
+                progressDialog.dismiss();
+            }
+        };
+        apiFor(callback).registerUser(new User(username,name,"",password), callback);
     }
 
 
@@ -157,13 +173,13 @@ public class SignupFragment extends DialogFragment implements SignupFragmentCall
 
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
-
+        mCallback.onSignupSuccess();
         //   setResult(RESULT_OK, null);
         //  finish();
     }
 
-    public void onSignupFailed() {
-        Toast.makeText(getActivity().getBaseContext(), "Sign up failed", Toast.LENGTH_LONG).show();
+    public void onSignupFailed(String reason) {
+        Toast.makeText(getActivity().getBaseContext(), "Sign up failed: "+reason, Toast.LENGTH_LONG).show();
 
         _signupButton.setEnabled(true);
     }
@@ -172,7 +188,7 @@ public class SignupFragment extends DialogFragment implements SignupFragmentCall
         boolean valid = true;
 
         String name = _nameText.getText().toString();
-        String email = _emailText.getText().toString();
+        String username = _usernameText.getText().toString();
         String password = _passwordText.getText().toString();
 
         if (name.isEmpty() || name.length() < 3) {
@@ -182,11 +198,17 @@ public class SignupFragment extends DialogFragment implements SignupFragmentCall
             _nameText.setError(null);
         }
 
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
+        /*if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            _usernameText.setError("enter a valid email address");
             valid = false;
         } else {
-            _emailText.setError(null);
+            _usernameText.setError(null);
+        }*/
+        if (username.isEmpty() || username.length() < 4 || username.length() > 10) {
+            _usernameText.setError("between 4 and 10 alphanumeric characters");
+            valid = false;
+        } else {
+            _usernameText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
@@ -199,5 +221,9 @@ public class SignupFragment extends DialogFragment implements SignupFragmentCall
         return valid;
     }
 
-
+    protected SimpleApi apiFor(CallbacksManager.CancelableCallback<?> callback) {
+        callbacksManager.addCallback(callback);
+        // return your retrofit API
+        return RestApiDispenser.createService(SimpleApi.class, SimpleApi.BASE_URL, "mobile_app", "mobile!@#");
+    }
 }

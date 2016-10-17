@@ -5,7 +5,8 @@ package uoa.di.gr.thesis.database;
  */
 public class Constants {
     public static final String URL_USERS="/test";
-    public static final String URL_REGISTER="/register/{username}/{name}/{surname}/{password}";
+    public static final String URL_REGISTER="/register";
+    public static final String URL_LOGIN="/login";
     public static final String URL_REGISTERZONE="/registerDangerZone";
     public static final String URL_EVENTS="/around";
     public static final String POST_EVENT="/events/";

@@ -75,17 +75,6 @@ public class MainActivity extends AppCompatActivity
 
 
             }});*/
-                final CallbacksManager.CancelableCallback<String> callback = callbacksManager.new CancelableCallback<String>() {
-                    @Override
-                    protected void onSuccess(String response, Response response2) {
-                        Toast.makeText(getApplicationContext(), "Success! " + response, Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    protected void onFailure(RetrofitError error) {
-                        Toast.makeText(getApplicationContext(), "Process failed, please try later." + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                };
 
                 final CallbacksManager.CancelableCallback<SimpleResponse> callback2 = callbacksManager.new CancelableCallback<SimpleResponse>() {
                     @Override
