@@ -1,8 +1,17 @@
 package uoa.di.gr.thesis.activities;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -47,6 +56,22 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // Android M Permission check
+            if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("This app needs location access");
+                builder.setMessage("Please grant location access so this app can detect beacons.");
+                builder.setPositiveButton(android.R.string.ok, null);
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.M)
+                    public void onDismiss(DialogInterface dialog) {
+                        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+                    }
+                });
+                builder.show();
+            }
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +104,7 @@ public class MainActivity extends AppCompatActivity
                 final CallbacksManager.CancelableCallback<SimpleResponse> callback2 = callbacksManager.new CancelableCallback<SimpleResponse>() {
                     @Override
                     protected void onSuccess(SimpleResponse response, Response response2) {
-                            Toast.makeText(getApplicationContext(), "Success! " + response.getResponse(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Success! " + response.getResponse(), Toast.LENGTH_SHORT).show();
 
                     }
 
@@ -90,25 +115,32 @@ public class MainActivity extends AppCompatActivity
                     }
                 };
 
-//                apiFor(callback).registerUser("Sevle3","ang3","val3","12343", callback);
 
-                    List <Zone> zones = new ArrayList<Zone>();
+                String connectivity_context = WIFI_SERVICE;
+
+                final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(connectivity_context);
+
+                wifiManager.startScan();
+                List<ScanResult> s;
+
+                s = wifiManager.getScanResults();
+
+                List<Zone> zones = new ArrayList<Zone>();
+                for(ScanResult scanResult : s)
+                {
                     Zone zone = new Zone();
-                    zone.setSignalStrength(12.2);
-                    User user = new User();
-                    user.setId(4L);
-                    user.setUsername("Sevle3");
-                    user.setName("ang3");
-                    user.setSurname("val3");
-                    user.setPassword("12343");
-                    zone.setUser(user);
                     Wifi wifi = new Wifi();
-                    wifi.setName("testWifi2");
-                    wifi.setMacAddress("testMacAddress2");
+                    wifi.setMacAddress(scanResult.BSSID);
+                    wifi.setName(scanResult.SSID);
                     zone.setWifi(wifi);
+                    zone.setSignalStrength((double) scanResult.level);
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    User user = new User();
+                    user.setUsername(prefs.getString("username","nobody"));
+                    zone.setUser(user);
                     zones.add(zone);
-                    Log.i("ZONES",zones.get(0).toString());
-                    apiFor(callback2).registerDangerZone(zones, callback2);
+                }
+                apiFor(callback2).registerDangerZone(zones, callback2);
             }
         });
 

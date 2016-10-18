@@ -3,7 +3,9 @@ package uoa.di.gr.thesis.fragments.authenticate;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -117,6 +119,10 @@ public class LoginFragment extends Fragment implements LoginFragmentCallbacks {
         String username = _usernameText.getText().toString();
         String password = _passwordText.getText().toString();
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        final SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("username", username);
+        editor.apply();
 
         final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
             @Override
