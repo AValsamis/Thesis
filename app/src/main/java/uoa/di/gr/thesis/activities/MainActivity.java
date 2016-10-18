@@ -73,33 +73,11 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton dangerous = (FloatingActionButton) findViewById(R.id.dangerous);
+        dangerous.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-
-             /*   IntentFilter i = new IntentFilter();
-                i.addAction (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-                registerReceiver(new BroadcastReceiver(){
-                    public void onReceive(Context c, Intent i){
-                        // Code to execute when SCAN_RESULTS_AVAILABLE_ACTION event occurs
-                        WifiManager w = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
-                        presentResults(w.getScanResults()); // your method to handle Scan results
-                        if (true) w.startScan(); // relaunch scan immediately
-                        else { /* Schedule the scan to be run later here }
-                    }
-                }, i );
-
-
-                // Launch  wifiscanner the first time here (it will call the broadcast receiver above)
-                WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-                boolean a = wm.startScan();
-
-
-
-
-            }});*/
 
                 final CallbacksManager.CancelableCallback<SimpleResponse> callback2 = callbacksManager.new CancelableCallback<SimpleResponse>() {
                     @Override
@@ -138,9 +116,61 @@ public class MainActivity extends AppCompatActivity
                     User user = new User();
                     user.setUsername(prefs.getString("username","nobody"));
                     zone.setUser(user);
+                    zone.setIsSafe(0);
                     zones.add(zone);
                 }
                 apiFor(callback2).registerDangerZone(zones, callback2);
+            }
+        });
+
+
+        FloatingActionButton safe = (FloatingActionButton) findViewById(R.id.safe);
+        safe.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                final CallbacksManager.CancelableCallback<SimpleResponse> callback2 = callbacksManager.new CancelableCallback<SimpleResponse>() {
+                    @Override
+                    protected void onSuccess(SimpleResponse response, Response response2) {
+                        Toast.makeText(getApplicationContext(), "Success! " + response.getResponse(), Toast.LENGTH_SHORT).show();
+
+                    }
+
+                    @Override
+                    protected void onFailure(RetrofitError error) {
+
+                        Toast.makeText(getApplicationContext(), error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    }
+                };
+
+
+                String connectivity_context = WIFI_SERVICE;
+
+                final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(connectivity_context);
+
+                wifiManager.startScan();
+                List<ScanResult> s;
+
+                s = wifiManager.getScanResults();
+
+                List<Zone> zones = new ArrayList<Zone>();
+                for(ScanResult scanResult : s)
+                {
+                    Zone zone = new Zone();
+                    Wifi wifi = new Wifi();
+                    wifi.setMacAddress(scanResult.BSSID);
+                    wifi.setName(scanResult.SSID);
+                    zone.setWifi(wifi);
+                    zone.setSignalStrength((double) scanResult.level);
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    User user = new User();
+                    user.setUsername(prefs.getString("username","nobody"));
+                    zone.setUser(user);
+                    zone.setIsSafe(1);
+                    zones.add(zone);
+                }
+                apiFor(callback2).registerSafeZone(zones, callback2);
             }
         });
 

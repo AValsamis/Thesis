@@ -17,12 +17,20 @@ public class Zone {
     private Double signalStrength;
     @Expose
     private User user;
+    // Integer in case we want to include neutral zones in the future
+    // 0: dangerous 1: safe (2: neutral)
+    @Expose
+    private Integer isSafe;
 
     public Zone(){}
 
-    public Zone(Wifi wifi, Double signalStrength) {
+    public Zone(Long id, String zoneId, Wifi wifi, Double signalStrength, User user, Integer isSafe) {
+        Id = id;
+        this.zoneId = zoneId;
         this.wifi = wifi;
         this.signalStrength = signalStrength;
+        this.user = user;
+        this.isSafe = isSafe;
     }
 
     public Long getId() {
@@ -65,6 +73,14 @@ public class Zone {
         this.signalStrength = signalStrength;
     }
 
+    public Integer getIsSafe() {
+        return isSafe;
+    }
+
+    public void setIsSafe(Integer isSafe) {
+        this.isSafe = isSafe;
+    }
+
     @Override
     public String toString() {
         return "Zone{" +
@@ -73,6 +89,7 @@ public class Zone {
                 ", wifi=" + wifi +
                 ", signalStrength=" + signalStrength +
                 ", user=" + user +
+                ", isSafe=" + isSafe +
                 '}';
     }
 }

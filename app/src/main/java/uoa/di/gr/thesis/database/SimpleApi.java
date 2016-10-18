@@ -36,8 +36,12 @@ public interface SimpleApi
     @FormUrlEncoded
     void loginUser(@Field("username") String username, @Field("password") String  password, Callback<SimpleResponse> cb);
 
-    @POST(Constants.URL_REGISTERZONE)
+    @POST(Constants.URL_REGISTERDANGERZONE)
     void registerDangerZone(@Body List<Zone> signalStrengths, Callback<SimpleResponse> cb);
+
+    @POST(Constants.URL_REGISTERSAFEZONE)
+    void registerSafeZone(@Body List<Zone> signalStrengths, Callback<SimpleResponse> cb);
+
     /*(@GET(Constants.URL_EVENTS)
     void getEvents(Callback<List<Event>> dataCallback);
 
