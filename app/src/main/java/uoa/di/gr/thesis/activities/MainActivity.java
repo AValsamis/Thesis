@@ -10,6 +10,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
@@ -19,10 +20,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,9 +52,12 @@ import uoa.di.gr.thesis.utils.CallbacksManager;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     protected final CallbacksManager callbacksManager = new CallbacksManager();
+    public String zoneName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -79,47 +85,131 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 
-                final CallbacksManager.CancelableCallback<SimpleResponse> callback2 = callbacksManager.new CancelableCallback<SimpleResponse>() {
+//                final String zoneName = "";
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Please enter a name for the zone: ");
+
+                // Set up the input
+                final EditText input = new EditText(MainActivity.this);
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
-                    protected void onSuccess(SimpleResponse response, Response response2) {
-                        Toast.makeText(getApplicationContext(), "Success! " + response.getResponse(), Toast.LENGTH_SHORT).show();
+                    public void onClick(DialogInterface dialog, int which) {
+                        zoneName = input.getText().toString();
+                        new AlertDialog.Builder(MainActivity.this).setMessage("Zone " + zoneName + " will be created.")
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        final CallbacksManager.CancelableCallback<SimpleResponse> callback2 = callbacksManager.new CancelableCallback<SimpleResponse>() {
+                                            @Override
+                                            protected void onSuccess(SimpleResponse response, Response response2) {
+                                                Toast.makeText(getApplicationContext(), "Success! " + response.getResponse(), Toast.LENGTH_SHORT).show();
 
+                                            }
+
+                                            @Override
+                                            protected void onFailure(RetrofitError error) {
+
+                                                Toast.makeText(getApplicationContext(), error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                            }
+                                        };
+
+
+                                        String connectivity_context = WIFI_SERVICE;
+
+                                        final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(connectivity_context);
+
+                                        wifiManager.startScan();
+                                        List<ScanResult> s;
+
+                                        s = wifiManager.getScanResults();
+
+                                        List<Zone> zones = new ArrayList<Zone>();
+                                        for(ScanResult scanResult : s)
+                                        {
+                                            Zone zone = new Zone();
+                                            Wifi wifi = new Wifi();
+                                            wifi.setMacAddress(scanResult.BSSID);
+                                            wifi.setName(scanResult.SSID);
+                                            zone.setWifi(wifi);
+                                            zone.setSignalStrength((double) scanResult.level);
+                                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                                            User user = new User();
+                                            user.setUsername(prefs.getString("username","nobody"));
+                                            zone.setUser(user);
+                                            zone.setIsSafe(0);
+                                            zone.setFriendlyName(zoneName);
+                                            zones.add(zone);
+                                        }
+                                        apiFor(callback2).registerDangerZone(zones, callback2);
+
+                                    }
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                })
+                                .show();
                     }
-
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
-                    protected void onFailure(RetrofitError error) {
-
-                        Toast.makeText(getApplicationContext(), error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
                     }
-                };
+                });
 
+                builder.show();
 
-                String connectivity_context = WIFI_SERVICE;
+//                final CallbacksManager.CancelableCallback<SimpleResponse> callback2 = callbacksManager.new CancelableCallback<SimpleResponse>() {
+//                    @Override
+//                    protected void onSuccess(SimpleResponse response, Response response2) {
+//                        Toast.makeText(getApplicationContext(), "Success! " + response.getResponse(), Toast.LENGTH_SHORT).show();
+//
+//                    }
+//
+//                    @Override
+//                    protected void onFailure(RetrofitError error) {
+//
+//                        Toast.makeText(getApplicationContext(), error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+//                    }
+//                };
+//
+//
+//                String connectivity_context = WIFI_SERVICE;
+//
+//                final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(connectivity_context);
+//
+//                wifiManager.startScan();
+//                List<ScanResult> s;
+//
+//                s = wifiManager.getScanResults();
+//
+//                List<Zone> zones = new ArrayList<Zone>();
+//                for(ScanResult scanResult : s)
+//                {
+//                    Zone zone = new Zone();
+//                    Wifi wifi = new Wifi();
+//                    wifi.setMacAddress(scanResult.BSSID);
+//                    wifi.setName(scanResult.SSID);
+//                    zone.setWifi(wifi);
+//                    zone.setSignalStrength((double) scanResult.level);
+//                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//                    User user = new User();
+//                    user.setUsername(prefs.getString("username","nobody"));
+//                    zone.setUser(user);
+//                    zone.setIsSafe(0);
+//                    zone.setFriendlyName(zoneName);
+//                    zones.add(zone);
+//                }
+//                apiFor(callback2).registerDangerZone(zones, callback2);
 
-                final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(connectivity_context);
-
-                wifiManager.startScan();
-                List<ScanResult> s;
-
-                s = wifiManager.getScanResults();
-
-                List<Zone> zones = new ArrayList<Zone>();
-                for(ScanResult scanResult : s)
-                {
-                    Zone zone = new Zone();
-                    Wifi wifi = new Wifi();
-                    wifi.setMacAddress(scanResult.BSSID);
-                    wifi.setName(scanResult.SSID);
-                    zone.setWifi(wifi);
-                    zone.setSignalStrength((double) scanResult.level);
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    User user = new User();
-                    user.setUsername(prefs.getString("username","nobody"));
-                    zone.setUser(user);
-                    zone.setIsSafe(0);
-                    zones.add(zone);
-                }
-                apiFor(callback2).registerDangerZone(zones, callback2);
             }
         });
 
@@ -174,6 +264,56 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        FloatingActionButton findZone = (FloatingActionButton) findViewById(R.id.findZone);
+        findZone.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+//                final CallbacksManager.CancelableCallback<SimpleResponse> callback2 = callbacksManager.new CancelableCallback<SimpleResponse>() {
+//                    @Override
+//                    protected void onSuccess(SimpleResponse response, Response response2) {
+//                        Toast.makeText(getApplicationContext(), "Success! " + response.getResponse(), Toast.LENGTH_SHORT).show();
+//
+//                    }
+//
+//                    @Override
+//                    protected void onFailure(RetrofitError error) {
+//
+//                        Toast.makeText(getApplicationContext(), error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+//                    }
+//                };
+
+
+                String connectivity_context = WIFI_SERVICE;
+
+                final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(connectivity_context);
+
+                wifiManager.startScan();
+                List<ScanResult> s;
+
+                s = wifiManager.getScanResults();
+
+                List<Zone> zones = new ArrayList<Zone>();
+                for(ScanResult scanResult : s)
+                {
+                    Zone zone = new Zone();
+                    Wifi wifi = new Wifi();
+                    wifi.setMacAddress(scanResult.BSSID);
+                    wifi.setName(scanResult.SSID);
+                    zone.setWifi(wifi);
+                    zone.setSignalStrength((double) scanResult.level);
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    User user = new User();
+                    user.setUsername(prefs.getString("username","nobody"));
+                    zone.setUser(user);
+                    zone.setIsSafe(1);
+                    zones.add(zone);
+                }
+                String zone = apiFor(null).getZone(zones);
+                Toast.makeText(getApplicationContext(), "Elderly is in zone with name: " + zone, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -201,7 +341,9 @@ public class MainActivity extends AppCompatActivity
         textView.setText(s);
     }
     protected SimpleApi apiFor(CallbacksManager.CancelableCallback<?> callback) {
-        callbacksManager.addCallback(callback);
+        if(callback!=null) {
+            callbacksManager.addCallback(callback);
+        }
         // return your retrofit API
         return RestApiDispenser.createService(SimpleApi.class, SimpleApi.BASE_URL, "mobile_app", "mobile!@#");
     }

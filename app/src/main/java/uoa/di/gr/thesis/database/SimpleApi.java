@@ -15,6 +15,7 @@ import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
+import retrofit.http.Query;
 import uoa.di.gr.thesis.entities.AccelerometerStats;
 import uoa.di.gr.thesis.entities.SimpleResponse;
 import uoa.di.gr.thesis.entities.User;
@@ -41,6 +42,9 @@ public interface SimpleApi
 
     @POST(Constants.URL_REGISTERSAFEZONE)
     void registerSafeZone(@Body List<Zone> signalStrengths, Callback<SimpleResponse> cb);
+
+    @POST(Constants.URL_FIND_ZONE)
+    String getZone(@Body List<Zone> signalStrengths);
 
     /*(@GET(Constants.URL_EVENTS)
     void getEvents(Callback<List<Event>> dataCallback);

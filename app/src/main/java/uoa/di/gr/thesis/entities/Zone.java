@@ -12,6 +12,8 @@ public class Zone {
     @Expose
     private String zoneId = "";
     @Expose
+    private String friendlyName = "";
+    @Expose
     private Wifi wifi;
     @Expose
     private Double signalStrength;
@@ -27,6 +29,7 @@ public class Zone {
     public Zone(Long id, String zoneId, Wifi wifi, Double signalStrength, User user, Integer isSafe) {
         Id = id;
         this.zoneId = zoneId;
+        this.friendlyName = friendlyName;
         this.wifi = wifi;
         this.signalStrength = signalStrength;
         this.user = user;
@@ -81,11 +84,20 @@ public class Zone {
         this.isSafe = isSafe;
     }
 
+    public String getFriendlyName() {
+        return friendlyName;
+    }
+
+    public void setFriendlyName(String friendlyName) {
+        this.friendlyName = friendlyName;
+    }
+
     @Override
     public String toString() {
         return "Zone{" +
                 "Id=" + Id +
                 ", zoneId='" + zoneId + '\'' +
+                ", friendlyName='" + friendlyName + '\'' +
                 ", wifi=" + wifi +
                 ", signalStrength=" + signalStrength +
                 ", user=" + user +
