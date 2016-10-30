@@ -13,6 +13,8 @@ public class Wifi {
     private String macAddress = "";
     @Expose
     private String name = "";
+    @Expose
+    private Integer signalStrength;
 
     public Wifi() {
     }
@@ -47,12 +49,21 @@ public class Wifi {
         this.wifiId = wifiId;
     }
 
+    public Integer getSignalStrength() {
+        return signalStrength;
+    }
+
+    public void setSignalStrength(Integer signalStrength) {
+        this.signalStrength = signalStrength;
+    }
+
     @Override
     public String toString() {
         return "Wifi{" +
                 "wifiId=" + wifiId +
                 ", macAddress='" + macAddress + '\'' +
                 ", name='" + name + '\'' +
+                ", signalStrength='" + signalStrength +
                 '}';
     }
 }

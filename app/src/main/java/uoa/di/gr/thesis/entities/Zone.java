@@ -9,14 +9,14 @@ public class Zone {
 
     @Expose
     private Long Id;
-    @Expose
-    private String zoneId = "";
+//    @Expose
+//    private String zoneId = "";
     @Expose
     private String friendlyName = "";
-    @Expose
-    private Wifi wifi;
-    @Expose
-    private Double signalStrength;
+//    @Expose
+//    private Wifi wifi;
+//    @Expose
+//    private Double signalStrength;
     @Expose
     private User user;
     // Integer in case we want to include neutral zones in the future
@@ -28,10 +28,10 @@ public class Zone {
 
     public Zone(Long id, String zoneId, Wifi wifi, Double signalStrength, User user, Integer isSafe) {
         Id = id;
-        this.zoneId = zoneId;
+//        this.zoneId = zoneId;
         this.friendlyName = friendlyName;
-        this.wifi = wifi;
-        this.signalStrength = signalStrength;
+//        this.wifi = wifi;
+//        this.signalStrength = signalStrength;
         this.user = user;
         this.isSafe = isSafe;
     }
@@ -44,13 +44,13 @@ public class Zone {
         Id = id;
     }
 
-    public String getZoneId() {
-        return zoneId;
-    }
-
-    public void setZoneId(String zoneId) {
-        this.zoneId = zoneId;
-    }
+//    public String getZoneId() {
+//        return zoneId;
+//    }
+//
+//    public void setZoneId(String zoneId) {
+//        this.zoneId = zoneId;
+//    }
 
     public User getUser() {
         return user;
@@ -60,21 +60,21 @@ public class Zone {
         this.user = user;
     }
 
-    public Wifi getWifi() {
-        return wifi;
-    }
-
-    public void setWifi(Wifi wifi) {
-        this.wifi = wifi;
-    }
-
-    public Double getSignalStrength() {
-        return signalStrength;
-    }
-
-    public void setSignalStrength(Double signalStrength) {
-        this.signalStrength = signalStrength;
-    }
+//    public Wifi getWifi() {
+//        return wifi;
+//    }
+//
+//    public void setWifi(Wifi wifi) {
+//        this.wifi = wifi;
+//    }
+//
+//    public Double getSignalStrength() {
+//        return signalStrength;
+//    }
+//
+//    public void setSignalStrength(Double signalStrength) {
+//        this.signalStrength = signalStrength;
+//    }
 
     public Integer getIsSafe() {
         return isSafe;
@@ -96,10 +96,10 @@ public class Zone {
     public String toString() {
         return "Zone{" +
                 "Id=" + Id +
-                ", zoneId='" + zoneId + '\'' +
+//                ", zoneId='" + zoneId + '\'' +
                 ", friendlyName='" + friendlyName + '\'' +
-                ", wifi=" + wifi +
-                ", signalStrength=" + signalStrength +
+//                ", wifi=" + wifi +
+//                ", signalStrength=" + signalStrength +
                 ", user=" + user +
                 ", isSafe=" + isSafe +
                 '}';

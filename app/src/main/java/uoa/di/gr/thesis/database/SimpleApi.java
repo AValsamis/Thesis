@@ -13,12 +13,15 @@ import retrofit.http.Body;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
+import retrofit.http.Multipart;
 import retrofit.http.POST;
+import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import uoa.di.gr.thesis.entities.AccelerometerStats;
 import uoa.di.gr.thesis.entities.SimpleResponse;
 import uoa.di.gr.thesis.entities.User;
+import uoa.di.gr.thesis.entities.Wifi;
 import uoa.di.gr.thesis.entities.Zone;
 
 public interface SimpleApi
@@ -37,14 +40,12 @@ public interface SimpleApi
     @FormUrlEncoded
     void loginUser(@Field("username") String username, @Field("password") String  password, Callback<SimpleResponse> cb);
 
-    @POST(Constants.URL_REGISTERDANGERZONE)
-    void registerDangerZone(@Body List<Zone> signalStrengths, Callback<SimpleResponse> cb);
-
-    @POST(Constants.URL_REGISTERSAFEZONE)
-    void registerSafeZone(@Body List<Zone> signalStrengths, Callback<SimpleResponse> cb);
+    @Multipart
+    @POST(Constants.URL_REGISTERZONE)
+    void registerZone(@Part("wifi") List<Wifi> wifis, @Part("zone")Zone zone, Callback<SimpleResponse> cb);
 
     @POST(Constants.URL_FIND_ZONE)
-    String getZone(@Body List<Zone> signalStrengths);
+    String getZone(@Body List<Wifi> signalStrengths);
 
     /*(@GET(Constants.URL_EVENTS)
     void getEvents(Callback<List<Event>> dataCallback);
