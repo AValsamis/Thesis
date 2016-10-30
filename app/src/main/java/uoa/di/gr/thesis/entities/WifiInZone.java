@@ -11,7 +11,7 @@ public class WifiInZone {
     private Zone zone;
 
     @Expose
-    private Integer singalStrength;
+    private Double singalStrength;
 
     public Wifi getWifi() {
         return wifi;
@@ -29,11 +29,11 @@ public class WifiInZone {
         this.zone = zone;
     }
 
-    public Integer getSingalStrength() {
+    public Double getSingalStrength() {
         return singalStrength;
     }
 
-    public void setSingalStrength(Integer singalStrength) {
+    public void setSingalStrength(Double singalStrength) {
         this.singalStrength = singalStrength;
     }
 

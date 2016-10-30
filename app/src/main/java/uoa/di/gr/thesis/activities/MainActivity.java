@@ -2,7 +2,6 @@ package uoa.di.gr.thesis.activities;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -22,18 +21,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.okhttp.ResponseBody;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,7 +40,6 @@ import uoa.di.gr.thesis.database.SimpleApi;
 import uoa.di.gr.thesis.entities.SimpleResponse;
 import uoa.di.gr.thesis.entities.User;
 import uoa.di.gr.thesis.entities.Wifi;
-import uoa.di.gr.thesis.entities.WifiInZone;
 import uoa.di.gr.thesis.entities.Zone;
 import uoa.di.gr.thesis.utils.CallbacksManager;
 
@@ -54,6 +47,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     protected final CallbacksManager callbacksManager = new CallbacksManager();
     public String zoneName = "";
+    protected final int SCAN_TIMES=10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +73,7 @@ public class MainActivity extends AppCompatActivity
                 builder.show();
             }
         }
-
+        
         FloatingActionButton dangerous = (FloatingActionButton) findViewById(R.id.dangerous);
         dangerous.setOnClickListener(new View.OnClickListener() {
 
@@ -111,6 +105,8 @@ public class MainActivity extends AppCompatActivity
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                    Toast.makeText(getApplicationContext(), "Please stay still and wait while zone is being registered...", Toast.LENGTH_LONG);
                                     final CallbacksManager.CancelableCallback<SimpleResponse> callback2 = callbacksManager.new CancelableCallback<SimpleResponse>() {
                                         @Override
                                         protected void onSuccess(SimpleResponse response, Response response2) {
@@ -128,17 +124,9 @@ public class MainActivity extends AppCompatActivity
                                     };
 
 
-                                    String connectivity_context = WIFI_SERVICE;
 
-                                    final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(connectivity_context);
-
-                                    wifiManager.startScan();
-                                    List<ScanResult> s;
-
-                                    s = wifiManager.getScanResults();
                                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-                                    List<Wifi> wifis = new ArrayList<Wifi>();
                                     Zone zone = new Zone();
                                     zone.setFriendlyName(zoneName);
                                     zone.setIsSafe(0);
@@ -146,12 +134,45 @@ public class MainActivity extends AppCompatActivity
                                     user.setUsername(prefs.getString("username", "nobody"));
                                     zone.setUser(user);
 
-                                    for (ScanResult scanResult : s) {
-                                        Wifi wifi = new Wifi();
-                                        wifi.setMacAddress(scanResult.BSSID);
-                                        wifi.setName(scanResult.SSID);
-                                        wifi.setSignalStrength(scanResult.level);
-                                        wifis.add(wifi);
+                                    // TODO use asynctask here
+
+                                    List<Wifi> wifis = new ArrayList<Wifi>();
+                                    List <String> wifiNames = new ArrayList();
+                                    for(int i = 0 ; i < SCAN_TIMES; i++) {
+                                        try {
+                                            Thread.sleep(2000);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        String connectivity_context = WIFI_SERVICE;
+
+                                        final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(connectivity_context);
+
+                                        wifiManager.startScan();
+                                        List<ScanResult> s;
+
+                                        s = wifiManager.getScanResults();
+
+                                        for (ScanResult scanResult : s) {
+                                            if (!wifiNames.contains(scanResult.SSID)) {
+                                                wifiNames.add(scanResult.SSID);
+                                                ArrayList<Double> signalStrengths = new ArrayList();
+                                                signalStrengths.add((double)scanResult.level);
+                                                Wifi wifi = new Wifi();
+                                                wifi.setMacAddress(scanResult.BSSID);
+                                                wifi.setName(scanResult.SSID);
+                                                wifi.setSignalStrength(signalStrengths);
+                                                wifis.add(wifi);
+                                            } else {
+                                                for (Wifi wifi : wifis) {
+                                                    if (wifi.getName().equals(scanResult.SSID)) {
+                                                        wifi.getSignalStrength().add((double)scanResult.level);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        Log.i("DEBUG", Arrays.asList(wifis).toString());
                                     }
                                     apiFor(callback2).registerZone(wifis, zone, callback2);
 
@@ -210,6 +231,7 @@ public class MainActivity extends AppCompatActivity
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    Toast.makeText(getApplicationContext(), "Please stay still and wait while zone is being registered...", Toast.LENGTH_LONG);
                                     final CallbacksManager.CancelableCallback<SimpleResponse> callback2 = callbacksManager.new CancelableCallback<SimpleResponse>() {
                                         @Override
                                         protected void onSuccess(SimpleResponse response, Response response2) {
@@ -227,17 +249,8 @@ public class MainActivity extends AppCompatActivity
                                     };
 
 
-                                    String connectivity_context = WIFI_SERVICE;
-
-                                    final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(connectivity_context);
-
-                                    wifiManager.startScan();
-                                    List<ScanResult> s;
-
-                                    s = wifiManager.getScanResults();
                                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-                                    List<Wifi> wifis = new ArrayList<Wifi>();
                                     Zone zone = new Zone();
                                     zone.setFriendlyName(zoneName);
                                     zone.setIsSafe(1);
@@ -245,12 +258,45 @@ public class MainActivity extends AppCompatActivity
                                     user.setUsername(prefs.getString("username", "nobody"));
                                     zone.setUser(user);
 
-                                    for (ScanResult scanResult : s) {
-                                        Wifi wifi = new Wifi();
-                                        wifi.setMacAddress(scanResult.BSSID);
-                                        wifi.setName(scanResult.SSID);
-                                        wifi.setSignalStrength(scanResult.level);
-                                        wifis.add(wifi);
+                                    // TODO use asynctask here
+
+                                    List<Wifi> wifis = new ArrayList<Wifi>();
+                                    List <String> wifiNames = new ArrayList();
+                                    for(int i = 0 ; i < SCAN_TIMES; i++) {
+                                        try {
+                                            Thread.sleep(2000);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        String connectivity_context = WIFI_SERVICE;
+
+                                        final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(connectivity_context);
+
+                                        wifiManager.startScan();
+                                        List<ScanResult> s;
+
+                                        s = wifiManager.getScanResults();
+
+                                        for (ScanResult scanResult : s) {
+                                            if (!wifiNames.contains(scanResult.SSID)) {
+                                                wifiNames.add(scanResult.SSID);
+                                                ArrayList<Double> signalStrengths = new ArrayList();
+                                                signalStrengths.add((double)scanResult.level);
+                                                Wifi wifi = new Wifi();
+                                                wifi.setMacAddress(scanResult.BSSID);
+                                                wifi.setName(scanResult.SSID);
+                                                wifi.setSignalStrength(signalStrengths);
+                                                wifis.add(wifi);
+                                            } else {
+                                                for (Wifi wifi : wifis) {
+                                                    if (wifi.getName().equals(scanResult.SSID)) {
+                                                        wifi.getSignalStrength().add((double)scanResult.level);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        Log.i("DEBUG", Arrays.asList(wifis).toString());
                                     }
                                     apiFor(callback2).registerZone(wifis, zone, callback2);
 
@@ -283,25 +329,45 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onClick(View view) {
-
-                String connectivity_context = WIFI_SERVICE;
-
-                final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(connectivity_context);
-
-                wifiManager.startScan();
-                List<ScanResult> s;
-
-                s = wifiManager.getScanResults();
-
+                Toast.makeText(getApplicationContext(), "Calculating zone...", Toast.LENGTH_LONG);
+                // TODO use asynctask here
                 List<Wifi> wifis = new ArrayList<Wifi>();
-                for(ScanResult scanResult : s)
-                {
-                    Wifi wifi = new Wifi();
-                    wifi.setMacAddress(scanResult.BSSID);
-                    wifi.setName(scanResult.SSID);
-                    wifi.setSignalStrength(scanResult.level);
-//                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    wifis.add(wifi);
+                List <String> wifiNames = new ArrayList();
+                for(int i = 0 ; i < SCAN_TIMES; i++) {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    String connectivity_context = WIFI_SERVICE;
+
+                    final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(connectivity_context);
+
+                    wifiManager.startScan();
+                    List<ScanResult> s;
+
+                    s = wifiManager.getScanResults();
+
+                    for (ScanResult scanResult : s) {
+                        if (!wifiNames.contains(scanResult.SSID)) {
+                            wifiNames.add(scanResult.SSID);
+                            ArrayList<Double> signalStrengths = new ArrayList();
+                            signalStrengths.add((double)scanResult.level);
+                            Wifi wifi = new Wifi();
+                            wifi.setMacAddress(scanResult.BSSID);
+                            wifi.setName(scanResult.SSID);
+                            wifi.setSignalStrength(signalStrengths);
+                            wifis.add(wifi);
+                        } else {
+                            for (Wifi wifi : wifis) {
+                                if (wifi.getName().equals(scanResult.SSID)) {
+                                    wifi.getSignalStrength().add((double)scanResult.level);
+                                }
+                            }
+                        }
+                    }
+                    Log.i("DEBUG", Arrays.asList(wifis).toString());
                 }
                 String zone = apiFor(null).getZone(wifis);
                 Toast.makeText(getApplicationContext(), "Elderly is in zone with name: " + zone, Toast.LENGTH_SHORT).show();

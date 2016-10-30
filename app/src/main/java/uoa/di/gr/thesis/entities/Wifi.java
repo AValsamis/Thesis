@@ -2,6 +2,8 @@ package uoa.di.gr.thesis.entities;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.ArrayList;
+
 /**
  * Created by Sevle on 9/23/2016.
  */
@@ -14,7 +16,7 @@ public class Wifi {
     @Expose
     private String name = "";
     @Expose
-    private Integer signalStrength;
+    private ArrayList<Double> signalStrength;
 
     public Wifi() {
     }
@@ -49,11 +51,11 @@ public class Wifi {
         this.wifiId = wifiId;
     }
 
-    public Integer getSignalStrength() {
+    public ArrayList<Double> getSignalStrength() {
         return signalStrength;
     }
 
-    public void setSignalStrength(Integer signalStrength) {
+    public void setSignalStrength(ArrayList<Double> signalStrength) {
         this.signalStrength = signalStrength;
     }
 
@@ -63,7 +65,7 @@ public class Wifi {
                 "wifiId=" + wifiId +
                 ", macAddress='" + macAddress + '\'' +
                 ", name='" + name + '\'' +
-                ", signalStrength='" + signalStrength +
+                ", signalStrength=" + signalStrength +
                 '}';
     }
 }
