@@ -129,7 +129,6 @@ public class DataCollectionActivity extends Activity implements SensorEventListe
             dataPacket.setUser(user);
             dataPacket.setAccelerometerStats(accelerometerStatsArrayList);
             dataPacket.setOrientationStats(orientationStatsArrayList);
-            // TODO send dataPacket to server
             final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
                 @Override
                 protected void onSuccess(SimpleResponse response, Response response2) {
