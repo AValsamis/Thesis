@@ -3,6 +3,7 @@ package uoa.di.gr.thesis.activities;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity
                 builder.show();
             }
         }
-        
+
         FloatingActionButton dangerous = (FloatingActionButton) findViewById(R.id.dangerous);
         dangerous.setOnClickListener(new View.OnClickListener() {
 
@@ -374,7 +375,19 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        FloatingActionButton collection = (FloatingActionButton) findViewById(R.id.collection);
+        collection.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Intent dialogIntent = new Intent(getApplicationContext(), DataCollectionActivity.class);
+                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(dialogIntent);
+
+            }
+        });
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -384,22 +397,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-//    protected void presentResults(List<ScanResult> wifiList){
-//        TextView textView = (TextView) findViewById(R.id.textViewAxtarmas);
-//        textView.setText("");
-//        String s = "";
-//        // Level of a Scan Result
-//        for (ScanResult scanResult : wifiList) {
-//            int level = WifiManager.calculateSignalLevel(scanResult.level, 5);
-//            //s=s.concat("Level is " + level + " out of 5\n");
-//            s=s.concat(scanResult.SSID +": Level is " + scanResult.BSSID +" "+scanResult.level + " out of 5");
-//            System.out.println(scanResult.SSID +": Level is " + scanResult.BSSID +" "+scanResult.level + " out of 5");
-//
-//        }
-//
-//
-//        textView.setText(s);
-//    }
     protected SimpleApi apiFor(CallbacksManager.CancelableCallback<?> callback) {
         if(callback!=null) {
             callbacksManager.addCallback(callback);

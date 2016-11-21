@@ -9,6 +9,7 @@ public class Constants {
     public static final String URL_LOGIN="/login";
     public static final String URL_REGISTERZONE="/registerZone";
     public static final String URL_FIND_ZONE="/getZone";
+    public static final String URL_SEND_DATA_PACKET="/sendDataPacket";
     public static final String URL_EVENTS="/around";
     public static final String POST_EVENT="/events/";
 }

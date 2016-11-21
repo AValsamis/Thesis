@@ -19,6 +19,7 @@ import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import uoa.di.gr.thesis.entities.AccelerometerStats;
+import uoa.di.gr.thesis.entities.DataPacket;
 import uoa.di.gr.thesis.entities.SimpleResponse;
 import uoa.di.gr.thesis.entities.User;
 import uoa.di.gr.thesis.entities.Wifi;
@@ -26,7 +27,7 @@ import uoa.di.gr.thesis.entities.Zone;
 
 public interface SimpleApi
 {
-    public static final String BASE_URL = "http://192.168.1.64:8080/";
+    public static final String BASE_URL = "http://192.168.1.65:8080/";
 
 
     @POST(Constants.URL_USERS)
@@ -46,6 +47,9 @@ public interface SimpleApi
 
     @POST(Constants.URL_FIND_ZONE)
     String getZone(@Body List<Wifi> signalStrengths);
+
+    @POST(Constants.URL_SEND_DATA_PACKET)
+    void sendDataPacket(@Body DataPacket dataPacket, Callback<SimpleResponse> cb);
 
     /*(@GET(Constants.URL_EVENTS)
     void getEvents(Callback<List<Event>> dataCallback);
