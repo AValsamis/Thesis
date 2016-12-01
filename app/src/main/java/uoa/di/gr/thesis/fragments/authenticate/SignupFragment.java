@@ -162,7 +162,8 @@ public class SignupFragment extends DialogFragment implements SignupFragmentCall
                 progressDialog.dismiss();
             }
         };
-        apiFor(callback).registerUser(new User(username,name,"",password), callback);
+        RestApiDispenser.getSimpleApiInstance().registerUser(new User(username,name,"",password), callback);
+
     }
 
 
@@ -219,11 +220,5 @@ public class SignupFragment extends DialogFragment implements SignupFragmentCall
         }
 
         return valid;
-    }
-
-    protected SimpleApi apiFor(CallbacksManager.CancelableCallback<?> callback) {
-        callbacksManager.addCallback(callback);
-        // return your retrofit API
-        return RestApiDispenser.createService(SimpleApi.class, SimpleApi.BASE_URL, "mobile_app", "mobile!@#");
     }
 }

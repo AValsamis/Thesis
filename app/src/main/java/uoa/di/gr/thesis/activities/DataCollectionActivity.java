@@ -144,8 +144,7 @@ public class DataCollectionActivity extends Activity implements SensorEventListe
                     Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
                 }
             };
-
-            apiFor(callback).sendDataPacket(dataPacket, callback);
+            RestApiDispenser.getSimpleApiInstance().sendDataPacket(dataPacket,callback);
 
             Log.i("DATAPACKET: " ,dataPacket.toString());
             dataPacket = new DataPacket();
@@ -210,13 +209,7 @@ public class DataCollectionActivity extends Activity implements SensorEventListe
         }
         return super.onKeyDown(keyCode, event);
     }
-    protected SimpleApi apiFor(CallbacksManager.CancelableCallback<?> callback) {
-        if(callback!=null) {
-            callbacksManager.addCallback(callback);
-        }
-        // return your retrofit API
-        return RestApiDispenser.createService(SimpleApi.class, SimpleApi.BASE_URL, "mobile_app", "mobile!@#");
-    }
+
 
 //    public void stopCollection(View view)
 //    {

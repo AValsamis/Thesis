@@ -140,7 +140,7 @@ public class LoginFragment extends Fragment implements LoginFragmentCallbacks {
                 progressDialog.dismiss();
             }
         };
-        apiFor(callback).loginUser(username,password, callback);
+        RestApiDispenser.getSimpleApiInstance().loginUser(username,password, callback);
     }
 
     @Override
@@ -214,9 +214,5 @@ public class LoginFragment extends Fragment implements LoginFragmentCallbacks {
     public void clickedRegister() {
     }
 
-    protected SimpleApi apiFor(CallbacksManager.CancelableCallback<?> callback) {
-        callbacksManager.addCallback(callback);
-        // return your retrofit API
-        return RestApiDispenser.createService(SimpleApi.class, SimpleApi.BASE_URL, "mobile_app", "mobile!@#");
-    }
+
 }

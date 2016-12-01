@@ -12,4 +12,6 @@ public class Constants {
     public static final String URL_SEND_DATA_PACKET="/sendDataPacket";
     public static final String URL_EVENTS="/around";
     public static final String POST_EVENT="/events/";
+    public static final String URL_SAFE_ZONES="/safeZones/{user}";
+    public static final String URL_DANG_ZONES="/dangerZones/{user}";
 }

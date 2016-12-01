@@ -12,4 +12,7 @@
 
     <string name="dummy_frag">Under Construction!</string>
     <string name="title_activity_authentication_activity">Authentication</string>
+
+    <string name="title_section1">Safe Zones</string>
+    <string name="title_section2">Dangerous Zones</string>
 </resources>
