@@ -144,8 +144,6 @@ public class SignupFragment extends DialogFragment implements SignupFragmentCall
         String username = _usernameText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        // TODO: Implement your own signup logic here.
-
         final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
             @Override
             protected void onSuccess(SimpleResponse response, Response response2) {

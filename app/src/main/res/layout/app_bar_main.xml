@@ -45,14 +45,19 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@android:drawable/ic_menu_search" />
 
-    <android.support.design.widget.FloatingActionButton
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/collection"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|center"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_menu_search" />
+        android:layout_marginTop="@dimen/fab_margin"
+        android:text="Start scanning"
+         />
 
-    <include layout="@layout/content_main" />
+    <include layout="@layout/content_main"
+             android:layout_width="629dp"
+             android:layout_height="723dp"/>
+
+
 
 </android.support.design.widget.CoordinatorLayout>

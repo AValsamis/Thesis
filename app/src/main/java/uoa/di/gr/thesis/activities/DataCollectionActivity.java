@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -11,9 +12,11 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -69,7 +72,7 @@ public class DataCollectionActivity extends Activity implements SensorEventListe
 
         Log.i("INSIDE DATACOLLECTION","Hi");
         super.onCreate(icicle);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.data_collection);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         user.setUsername(prefs.getString("username", "nobody"));
@@ -77,20 +80,28 @@ public class DataCollectionActivity extends Activity implements SensorEventListe
         collectData();
         Calendar cal = Calendar.getInstance();
 
+        AppCompatButton collection = (AppCompatButton) this.findViewById(R.id.stopCollection);
+        collection.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                stopCollection(view);
+
+            }
+        });
 //      Intent intent = new Intent(this, DataSendingService.class);
 //      pintent = PendingIntent.getService(this, 1234567, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 10*1000, pintent);
 
+
     }
 
     public void collectData()
     {
         try {
-
             mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
             mAccelerometer=mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             mMagnetic=mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
@@ -99,8 +110,6 @@ public class DataCollectionActivity extends Activity implements SensorEventListe
         } catch (IllegalStateException ex) {
             Logger.getLogger(DataCollectionActivity.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-
     }
 
     protected void onResume() {
@@ -111,8 +120,7 @@ public class DataCollectionActivity extends Activity implements SensorEventListe
 
     @Override
     protected void onPause() {
-        mSensorManager.unregisterListener(mSensorListener);
-
+        mSensorManager.unregisterListener(this);
         super.onPause();
 
     }
@@ -124,6 +132,8 @@ public class DataCollectionActivity extends Activity implements SensorEventListe
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
 
+
+
         if(accelerometerStatsArrayList.size() > 5)
         {
             dataPacket.setUser(user);
@@ -132,8 +142,8 @@ public class DataCollectionActivity extends Activity implements SensorEventListe
             final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
                 @Override
                 protected void onSuccess(SimpleResponse response, Response response2) {
-                    if (response.getIsOk())
-                        Toast.makeText(getApplicationContext(), "Success! " + response.getResponse(), Toast.LENGTH_SHORT).show();
+                    if (response.getIsOk()){}
+//                        Toast.makeText(getApplicationContext(), "Success! " + response.getResponse(), Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(getApplicationContext(), response.getResponse(), Toast.LENGTH_SHORT).show();
                 }
@@ -210,6 +220,26 @@ public class DataCollectionActivity extends Activity implements SensorEventListe
         return super.onKeyDown(keyCode, event);
     }
 
+    public void stopCollection(View view) {
+        try {
+            TextView tv = (TextView) this.findViewById(R.id.stopCollection);
+            tv.setVisibility(View.INVISIBLE);
+            showToast("Stopping the collection...");
+            mSensorManager.unregisterListener(this);
+            AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+            alarm.cancel(pintent);
+            Intent dialogIntent = new Intent(this.getApplicationContext(), MainActivity.class);
+            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(dialogIntent);
+            finish();
+
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(DataCollectionActivity.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalStateException ex) {
+            Logger.getLogger(DataCollectionActivity.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
 //    public void stopCollection(View view)
 //    {

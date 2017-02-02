@@ -4,7 +4,9 @@ package uoa.di.gr.thesis.fragments.zones;
  * Created by Angelos on 11/21/2016.
  */
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -114,11 +116,14 @@ public  class ZoneFragment extends ListFragment implements LoaderManager.LoaderC
                 System.out.println("GroupFragmentAsyncTask.loadInBackground");
                 SimpleApi simpleApi = RestApiDispenser.getSimpleApiInstance();
                 List<Zone> zones = null;
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+                String username=prefs.getString("username", "nobody");
+
                 try {
                     if(issafe)
-                        zones = simpleApi.getSafeZones(1L);
+                        zones = simpleApi.getSafeZones(username);
                     else
-                        zones = simpleApi.getDangerZones(1L);
+                        zones = simpleApi.getDangerZones(username);
                 }catch(RetrofitError e)
                 {
                     return null;

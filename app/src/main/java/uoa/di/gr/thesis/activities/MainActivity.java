@@ -19,11 +19,12 @@ import java.util.List;
 import uoa.di.gr.thesis.R;
 import uoa.di.gr.thesis.entities.Wifi;
 import uoa.di.gr.thesis.fragments.main.MainFragment;
+import uoa.di.gr.thesis.interfaces.MainFragmentCallbacks;
 import uoa.di.gr.thesis.interfaces.RegisterZoneCallbacks;
 import uoa.di.gr.thesis.utils.CallbacksManager;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, RegisterZoneCallbacks {
+        implements NavigationView.OnNavigationItemSelectedListener, RegisterZoneCallbacks, MainFragmentCallbacks {
 
     private static final String TAG = "[AuthenticationActivity]";
     final FragmentManager fm = getSupportFragmentManager();
@@ -138,5 +139,12 @@ public class MainActivity extends AppCompatActivity
         if (articleFrag != null) {
             articleFrag.onRegisterZoneFailure(response);
         }
+    }
+
+    @Override
+    public void startDataCollectionFragment() {
+        Intent dialogIntent = new Intent(this, DataCollectionActivity.class);
+        dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(dialogIntent);
     }
 }

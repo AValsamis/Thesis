@@ -27,12 +27,12 @@ import uoa.di.gr.thesis.entities.Zone;
 
 public interface SimpleApi
 {
-    public static final String BASE_URL = "http://192.168.1.2:8080/";
+    public static final String BASE_URL = "http://192.168.1.69:8080/";
 
 
     @POST(Constants.URL_USERS)
     //void testApi(@Body String string, Callback<String> cb);
-     void testApi(@Body AccelerometerStats accelerometerStats, Callback<String> cb);
+    void testApi(@Body AccelerometerStats accelerometerStats, Callback<String> cb);
 
     @POST(Constants.URL_REGISTER)
     void registerUser(@Body User user, Callback<SimpleResponse> cb);
@@ -46,13 +46,13 @@ public interface SimpleApi
     void registerZone(@Part("wifi") List<Wifi> wifis, @Part("zone")Zone zone, Callback<SimpleResponse> cb);
 
     @POST(Constants.URL_FIND_ZONE)
-    String getZone(@Body List<Wifi> signalStrengths);
+    SimpleResponse getZone(@Body List<Wifi> signalStrengths);
 
     @GET(Constants.URL_SAFE_ZONES)
-    List<Zone> getSafeZones(@Path("user") Long userId);
+    List<Zone> getSafeZones(@Path("user") String userId);
 
     @GET(Constants.URL_DANG_ZONES)
-    List<Zone> getDangerZones(@Path("user") Long userId);
+    List<Zone> getDangerZones(@Path("user") String userId);
 
     @POST(Constants.URL_SEND_DATA_PACKET)
     void sendDataPacket(@Body DataPacket dataPacket, Callback<SimpleResponse> cb);

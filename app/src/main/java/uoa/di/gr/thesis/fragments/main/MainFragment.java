@@ -19,6 +19,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatButton;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,6 +44,7 @@ import uoa.di.gr.thesis.entities.SimpleResponse;
 import uoa.di.gr.thesis.entities.User;
 import uoa.di.gr.thesis.entities.Wifi;
 import uoa.di.gr.thesis.entities.Zone;
+import uoa.di.gr.thesis.interfaces.MainFragmentCallbacks;
 import uoa.di.gr.thesis.interfaces.RegisterZoneCallbacks;
 import uoa.di.gr.thesis.utils.CallbacksManager;
 import uoa.di.gr.thesis.utils.RegisterZone;
@@ -53,9 +55,10 @@ import static android.content.Context.WIFI_SERVICE;
  * Created by Angelos on 11/21/2016.
  */
 
-public class MainFragment extends Fragment  implements RegisterZoneCallbacks{
+public class MainFragment extends Fragment  implements RegisterZoneCallbacks, MainFragmentCallbacks {
     public static final String TAG = MainFragment.class.getSimpleName();
     private RegisterZoneCallbacks registerZoneCallback;
+    private MainFragmentCallbacks mainFragmentCallback;
     protected final CallbacksManager callbacksManager = new CallbacksManager();
 
         TextView test;
@@ -76,8 +79,15 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks{
         return (f);
     }
 
+    private static MainFragmentCallbacks sMainFragmentCallbacks = new MainFragmentCallbacks() {
+        @Override
+        public void startDataCollectionFragment() {
 
-    //Dummy interface to register onDetach
+        }
+    };
+
+
+        //Dummy interface to register onDetach
     private static RegisterZoneCallbacks sDummyCallbacks = new RegisterZoneCallbacks() {
         @Override
         public void onGatherWifiList(List<Wifi> wifis) {
@@ -102,6 +112,7 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks{
         // the callback interface. If not, it throws an exception
         try {
             registerZoneCallback = (RegisterZoneCallbacks) activity;
+            mainFragmentCallback = (MainFragmentCallbacks) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement LoginFragmentCallbacks");
@@ -113,6 +124,7 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks{
         super.onDetach();
         // Reset the active callback interface to the dummy implementation.
         registerZoneCallback = sDummyCallbacks;
+        mainFragmentCallback = sMainFragmentCallbacks;
 
     }
 
@@ -123,7 +135,6 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks{
         StrictMode.setThreadPolicy(policy);
         super.onCreate(savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_main, container, false);
-        test = (TextView) v.findViewById(R.id.textView2);
 
         progressDialog = new ProgressDialog(getActivity(), R.style.MyTheme);
         progressDialog.setIndeterminate(true);
@@ -288,7 +299,6 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks{
 
             @Override
             public void onClick(View view) {
-                test.setText("dglsghdp");
 //                final String zoneName = "";
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -399,19 +409,17 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks{
                     }
                     Log.i("DEBUG", Arrays.asList(wifis).toString());
                 }
-                String zone = RestApiDispenser.getSimpleApiInstance().getZone(wifis);
-                Toast.makeText(getActivity(), "Elderly is in zone with name: " + zone, Toast.LENGTH_SHORT).show();
+                SimpleResponse zone = RestApiDispenser.getSimpleApiInstance().getZone(wifis);
+                Toast.makeText(getActivity(), "Elderly is in zone with name: " + zone.getResponse(), Toast.LENGTH_SHORT).show();
             }
         });
 
-        FloatingActionButton collection = (FloatingActionButton) getActivity().findViewById(R.id.collection);
+        AppCompatButton collection = (AppCompatButton) getActivity().findViewById(R.id.collection);
         collection.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                Intent dialogIntent = new Intent(getContext(), DataCollectionActivity.class);
-                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(dialogIntent);
+                mainFragmentCallback.startDataCollectionFragment();
 
             }
         });
@@ -463,6 +471,11 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks{
     @Override
     public void onRegisterZoneFailure(String response) {
         Toast.makeText(getActivity(),"Failure! " + response,Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void startDataCollectionFragment() {
 
     }
 }
