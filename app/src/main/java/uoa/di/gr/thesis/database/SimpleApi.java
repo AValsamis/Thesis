@@ -27,7 +27,7 @@ import uoa.di.gr.thesis.entities.Zone;
 
 public interface SimpleApi
 {
-    public static final String BASE_URL = "http://192.168.1.69:8080/";
+    public static final String BASE_URL = "http://192.168.1.5:8080/";
 
 
     @POST(Constants.URL_USERS)

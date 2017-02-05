@@ -45,7 +45,7 @@ import uoa.di.gr.thesis.utils.CallbacksManager;
 
 public class DataCollectionActivity extends Activity implements SensorEventListener {
 
-    private static final int ACCELEROMETER_INTERVAL = 200;
+    private static final int ACCELEROMETER_INTERVAL = 350;
     private static final int ORIENTATION_INTERVAL = 200;
     protected final CallbacksManager callbacksManager = new CallbacksManager();
 
@@ -120,7 +120,7 @@ public class DataCollectionActivity extends Activity implements SensorEventListe
 
     @Override
     protected void onPause() {
-        mSensorManager.unregisterListener(this);
+        mSensorManager.unregisterListener(mSensorListener);
         super.onPause();
 
     }
@@ -164,8 +164,8 @@ public class DataCollectionActivity extends Activity implements SensorEventListe
         if (sensor.getType() == Sensor.TYPE_ACCELEROMETER)
         {
             long curTime=System.currentTimeMillis();
-            if(curTime-time > ACCELEROMETER_INTERVAL)
-            {
+//            if(curTime-time > ACCELEROMETER_INTERVAL)
+//            {
                 Log.i("TIMES ARE: ",curTime+"  "+time);
                 try {
                     float x = event.values[0];
@@ -183,7 +183,7 @@ public class DataCollectionActivity extends Activity implements SensorEventListe
                 } catch (IllegalStateException ex) {
                     Logger.getLogger(DataCollectionActivity.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
+//            }
         }
         else if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             long curTime=System.currentTimeMillis();
