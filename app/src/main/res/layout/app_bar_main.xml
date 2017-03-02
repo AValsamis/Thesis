@@ -56,8 +56,8 @@
 
     <include layout="@layout/content_main"
              android:layout_width="629dp"
-             android:layout_height="723dp"/>
-
+             android:layout_height="723dp"
+             android:id="@+id/include"/>
 
 
 </android.support.design.widget.CoordinatorLayout>

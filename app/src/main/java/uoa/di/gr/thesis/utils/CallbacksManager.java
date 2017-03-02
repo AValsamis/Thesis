@@ -7,6 +7,7 @@ import java.util.Set;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import uoa.di.gr.thesis.entities.SimpleResponse;
 
 /**
  * Created by Sevle on 10/13/2015.
@@ -119,6 +120,8 @@ public class CallbacksManager {
         }
 
         protected abstract void onSuccess(T t, Response response);
+
+        protected abstract void onSuccess(SimpleResponse response, Response response2);
 
         protected abstract void onFailure(RetrofitError error);
     }
