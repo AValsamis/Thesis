@@ -122,6 +122,7 @@ public class LoginFragment extends Fragment implements LoginFragmentCallbacks {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         final SharedPreferences.Editor editor = prefs.edit();
         editor.putString("username", username);
+        editor.putBoolean("log",true);
         editor.apply();
 
         final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {

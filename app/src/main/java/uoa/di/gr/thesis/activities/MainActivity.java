@@ -1,8 +1,10 @@
 package uoa.di.gr.thesis.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -104,8 +106,21 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, ZoneActivity.class);
             startActivity(intent);
         }
+        if (id == R.id.logout)
+        {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            final SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("username", "");
+            editor.putBoolean("log",false);
+            editor.apply();
+            Intent intent = new Intent(this, AuthenticationActivity.class);
+            startActivity(intent);
+            this.finish();
+
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
 
         return true;
     }

@@ -1,7 +1,9 @@
 package uoa.di.gr.thesis.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -26,12 +28,12 @@ public class AuthenticationActivity  extends AppCompatActivity implements LoginF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authenticate);
 
-        /*  SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-      if (!preferences.getBoolean(getString(R.string.INTRO), false)) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if (preferences.getBoolean("log", false)) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             this.finish();
-        }*/
+        }
 
         getSupportFragmentManager();
         final FragmentTransaction ft = fm.beginTransaction();
