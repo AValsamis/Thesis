@@ -112,12 +112,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onGatherWifiList(List<Wifi> wifis) {
+    public void onGatherWifiList(List<Wifi> wifis,Boolean isSafe) {
         MainFragment articleFrag = (MainFragment)
                 getSupportFragmentManager().findFragmentByTag(MainFragment.TAG);
 
         if (articleFrag != null) {
-            articleFrag.onGatherWifiList(wifis);
+            articleFrag.onGatherWifiList(wifis,isSafe);
         }
     }
 

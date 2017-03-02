@@ -90,7 +90,7 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks, Ma
         //Dummy interface to register onDetach
     private static RegisterZoneCallbacks sDummyCallbacks = new RegisterZoneCallbacks() {
         @Override
-        public void onGatherWifiList(List<Wifi> wifis) {
+        public void onGatherWifiList(List<Wifi> wifis, Boolean isSafe) {
 
         }
 
@@ -167,8 +167,6 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks, Ma
 
             @Override
             public void onClick(View view) {
-
-//                final String zoneName = "";
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Please enter a name for the zone: ");
 
@@ -194,82 +192,7 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks, Ma
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.cancel();
-                                            Toast.makeText(getActivity(), "Please stay still and wait while zone is being registered...", Toast.LENGTH_LONG);
-                                            final CallbacksManager.CancelableCallback<SimpleResponse> callback2 = callbacksManager.new CancelableCallback<SimpleResponse>() {
-                                                @Override
-                                                protected void onSuccess(SimpleResponse response, Response response2) {
-                                                    if (response.getIsOk())
-                                                        Toast.makeText(getActivity(), "Success! " + response.getResponse(), Toast.LENGTH_SHORT).show();
-                                                    else
-                                                        Toast.makeText(getActivity(), response.getResponse(), Toast.LENGTH_SHORT).show();
-                                                }
-
-                                                @Override
-                                                protected void onFailure(RetrofitError error) {
-
-                                                    Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
-                                                }
-                                            };
-
-
-
-                                            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-                                            Zone zone = new Zone();
-                                            zone.setFriendlyName(zoneName);
-                                            zone.setIsSafe(0);
-                                            User user = new User();
-                                            user.setUsername(prefs.getString("username", "nobody"));
-                                            zone.setUser(user);
-
-                                            Handler h = new Handler();
-
-
-
-                                            // TODO use asynctask here
-
-                                            List<Wifi> wifis = new ArrayList<Wifi>();
-                                            List <String> wifiNames = new ArrayList();
-                                            for(int i = 0 ; i < SCAN_TIMES; i++) {
-                                                try {
-                                                    Thread.sleep(2000);
-                                                } catch (InterruptedException e) {
-                                                    e.printStackTrace();
-                                                }
-
-                                                String connectivity_context = WIFI_SERVICE;
-
-                                                final WifiManager wifiManager = (WifiManager) getActivity().getSystemService(connectivity_context);
-
-                                                wifiManager.startScan();
-                                                List<ScanResult> s;
-
-                                                s = wifiManager.getScanResults();
-
-                                                for (ScanResult scanResult : s) {
-                                                    if (!wifiNames.contains(scanResult.SSID)) {
-                                                        wifiNames.add(scanResult.SSID);
-                                                        ArrayList<Double> signalStrengths = new ArrayList();
-                                                        signalStrengths.add((double)scanResult.level);
-                                                        Wifi wifi = new Wifi();
-                                                        wifi.setMacAddress(scanResult.BSSID);
-                                                        wifi.setName(scanResult.SSID);
-                                                        wifi.setSignalStrength(signalStrengths);
-                                                        wifis.add(wifi);
-                                                    } else {
-                                                        for (Wifi wifi : wifis) {
-                                                            if (wifi.getName().equals(scanResult.SSID)) {
-                                                                wifi.getSignalStrength().add((double)scanResult.level);
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                Log.i("DEBUG", Arrays.asList(wifis).toString());
-                                            }
-                                            RestApiDispenser.getSimpleApiInstance().registerZone(wifis, zone, callback2);
-
-
-
+                                            initiateRegisterZoneService(false);
                                         }
                                     })
                                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -333,14 +256,8 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks, Ma
                                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-
-                                            mWorkerThread = new RegisterZone(getActivity(),new Handler(),registerZoneCallback);
-                                            mWorkerThread.start();
-                                            mWorkerThread.prepareHandler();
-                                            mWorkerThread.queueTask();
                                             dialog.dismiss();
-                                            progressDialog.setMessage("Saving zone...");
-                                            progressDialog.show();
+                                            initiateRegisterZoneService(true);
                                         }
                                     })
                                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -363,6 +280,7 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks, Ma
                 builder.show();
             }
         });
+
 
         FloatingActionButton findZone = (FloatingActionButton) getActivity().findViewById(R.id.findZone);
         findZone.setOnClickListener(new View.OnClickListener() {
@@ -429,10 +347,18 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks, Ma
         return  v;
     }
 
-
+    public void initiateRegisterZoneService(Boolean isSafe)
+    {
+        mWorkerThread = new RegisterZone(getActivity(), isSafe, new Handler(),registerZoneCallback);
+        mWorkerThread.start();
+        mWorkerThread.prepareHandler();
+        mWorkerThread.queueTask();
+        progressDialog.setMessage("Saving zone...");
+        progressDialog.show();
+    }
 
     @Override
-    public void onGatherWifiList(List<Wifi> wifis) {
+    public void onGatherWifiList(List<Wifi> wifis, Boolean isSafe) {
         final CallbacksManager.CancelableCallback<SimpleResponse> callback2 = callbacksManager.new CancelableCallback<SimpleResponse>() {
             @Override
             protected void onSuccess(SimpleResponse response, Response response2) {
@@ -448,13 +374,15 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks, Ma
                 progressDialog.dismiss();
                 registerZoneCallback.onRegisterZoneFailure(error.getLocalizedMessage());
             }
-
         };
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         final Zone zone = new Zone();
         zone.setFriendlyName(zoneName);
-        zone.setIsSafe(1);
+        if (isSafe)
+            zone.setIsSafe(1);
+        else
+            zone.setIsSafe(0);
         User user = new User();
         user.setUsername(prefs.getString("username", "nobody"));
         zone.setUser(user);

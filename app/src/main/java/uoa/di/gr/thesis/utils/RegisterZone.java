@@ -24,14 +24,16 @@ public class RegisterZone extends HandlerThread {
 
     private Handler mWorkerHandler;
     private Handler mResponseHandler;
+    private Boolean isSafe;
     WifiManager wifiManager;
     private static final String TAG = RegisterZone.class.getSimpleName();
     //private Map<ImageView, String> mRequestMap = new HashMap<ImageView, String>();
     private RegisterZoneCallbacks mCallback;
 
 
-    public RegisterZone(Context context, Handler responseHandler, RegisterZoneCallbacks callback) {
+    public RegisterZone(Context context, Boolean isSafe, Handler responseHandler, RegisterZoneCallbacks callback) {
         super(TAG);
+        this.isSafe=isSafe;
         mResponseHandler = responseHandler;
         mCallback = callback;
         wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
@@ -99,7 +101,7 @@ public class RegisterZone extends HandlerThread {
         mResponseHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.onGatherWifiList(wifis);
+                mCallback.onGatherWifiList(wifis,isSafe);
             }
         });
     }
