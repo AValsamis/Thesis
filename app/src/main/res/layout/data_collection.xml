@@ -15,7 +15,7 @@
         android:id="@+id/stopCollection"
         android:layout_width="147dp"
         android:layout_height="wrap_content"
-        android:text="Stop scanning"
+        android:text="Start scanning"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="200dp"/>
 </LinearLayout>

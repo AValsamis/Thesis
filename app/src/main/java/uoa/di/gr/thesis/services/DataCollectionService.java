@@ -54,6 +54,7 @@ public class DataCollectionService extends Service implements SensorEventListene
 
     private SensorManager mSensorManager;
     private Sensor mAccelerometer, mMagnetic;
+    private Boolean started = false;
     public SensorEventListener mSensorListener ;
     private FileOutputStream fOut = null;
     private PendingIntent pintent;
@@ -84,6 +85,7 @@ public class DataCollectionService extends Service implements SensorEventListene
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //TODO do something useful
+        started=true;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         user.setUsername(prefs.getString("username", "nobody"));
 
@@ -207,7 +209,12 @@ public class DataCollectionService extends Service implements SensorEventListene
     public void unregisterListeners()
     {
         mSensorManager.unregisterListener(this);
+        started=false;
         this.stopSelf();
+    }
+
+    public Boolean checkStarted(){
+        return started;
     }
 
     @Override
