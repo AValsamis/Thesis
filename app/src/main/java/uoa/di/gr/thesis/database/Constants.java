@@ -14,4 +14,6 @@ public class Constants {
     public static final String POST_EVENT="/events/";
     public static final String URL_SAFE_ZONES="/safeZones/{user}";
     public static final String URL_DANG_ZONES="/dangerZones/{user}";
+    public static final String URL_FALL_DETECTION="/startFallDetection/{userId}";
+    public static final String URL_IS_ELDERLY="/isElderly/{username}";
 }

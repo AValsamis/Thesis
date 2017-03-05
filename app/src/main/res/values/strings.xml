@@ -9,6 +9,8 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="name">Name</string>
+    <string name="elderly_name">Elderly Name</string>
+    <string name="elderly_username">Elderly Username</string>
 
     <string name="dummy_frag">Under Construction!</string>
     <string name="title_activity_authentication_activity">Authentication</string>

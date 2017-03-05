@@ -57,6 +57,12 @@ public interface SimpleApi
     @POST(Constants.URL_SEND_DATA_PACKET)
     void sendDataPacket(@Body DataPacket dataPacket, Callback<SimpleResponse> cb);
 
+    @GET(Constants.URL_FALL_DETECTION)
+    int fallDetection(@Path("userId") Long userId);
+
+    @GET(Constants.URL_IS_ELDERLY)
+    boolean isElderly(@Path("username") String username);
+
     /*(@GET(Constants.URL_EVENTS)
     void getEvents(Callback<List<Event>> dataCallback);
 

@@ -11,6 +11,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.AppCompatButton;
@@ -54,7 +55,6 @@ public class DataCollectionService extends Service implements SensorEventListene
 
     private SensorManager mSensorManager;
     private Sensor mAccelerometer, mMagnetic;
-    private Boolean started = false;
     public SensorEventListener mSensorListener ;
     private FileOutputStream fOut = null;
     private PendingIntent pintent;
@@ -70,6 +70,8 @@ public class DataCollectionService extends Service implements SensorEventListene
     private DataPacket dataPacket = new DataPacket();
     private ArrayList<AccelerometerStats> accelerometerStatsArrayList = new ArrayList<>();
     private ArrayList<OrientationStats> orientationStatsArrayList = new ArrayList<>();
+    Handler h = new Handler();
+    int delay = 10000; //milliseconds
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -84,10 +86,28 @@ public class DataCollectionService extends Service implements SensorEventListene
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //TODO do something useful
-        started=true;
+
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         user.setUsername(prefs.getString("username", "nobody"));
+
+        setRunning(true);
+
+//        h.postDelayed(new Runnable(){
+//            public void run(){
+//                //do something
+//                int fallDetected = RestApiDispenser.getSimpleApiInstance().fallDetection(user.getId());
+//                if(fallDetected == 1)
+//                {
+//
+//                }
+//                else if(fallDetected==2)
+//                {
+//
+//                }
+//                h.postDelayed(this, delay);
+//            }
+//        }, delay);
 
         collectData();
         Calendar cal = Calendar.getInstance();
@@ -124,8 +144,6 @@ public class DataCollectionService extends Service implements SensorEventListene
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
-
-
 
         if(accelerometerStatsArrayList.size() > 5)
         {
@@ -209,12 +227,15 @@ public class DataCollectionService extends Service implements SensorEventListene
     public void unregisterListeners()
     {
         mSensorManager.unregisterListener(this);
-        started=false;
+        setRunning(false);
         this.stopSelf();
     }
 
-    public Boolean checkStarted(){
-        return started;
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        setRunning(false);
     }
 
     @Override
@@ -222,5 +243,17 @@ public class DataCollectionService extends Service implements SensorEventListene
 
     }
 
+    private void setRunning(boolean running) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = pref.edit();
+
+        editor.putBoolean("PREF_IS_RUNNING", running);
+        editor.apply();
+    }
+
+    public static boolean isRunning(Context ctx) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx.getApplicationContext());
+        return pref.getBoolean("PREF_IS_RUNNING", false);
+    }
 
 }

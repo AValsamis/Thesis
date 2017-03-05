@@ -35,6 +35,8 @@ public class SignupFragment extends DialogFragment implements SignupFragmentCall
     EditText _nameText;
     EditText _usernameText;
     EditText _passwordText;
+    EditText _elderlyUserNameText;
+    EditText _elderlyNameText;
     Button _signupButton;
     TextView _loginLink;
 
@@ -57,6 +59,8 @@ public class SignupFragment extends DialogFragment implements SignupFragmentCall
         _nameText = (EditText) v.findViewById(R.id.input_name);
         _usernameText = (EditText) v.findViewById(R.id.input_username);
         _passwordText = (EditText) v.findViewById(R.id.input_password);
+        _elderlyUserNameText = (EditText) v.findViewById(R.id.input_elderly_user_name);
+        _elderlyNameText = (EditText) v.findViewById(R.id.input_elderly_name);
         _signupButton = (Button) v.findViewById(R.id.btn_signup);
         _loginLink = (TextView) v.findViewById(R.id.link_login);
 
@@ -143,6 +147,8 @@ public class SignupFragment extends DialogFragment implements SignupFragmentCall
         String name = _nameText.getText().toString();
         String username = _usernameText.getText().toString();
         String password = _passwordText.getText().toString();
+        String elderlyUserName = _elderlyUserNameText.getText().toString();
+        String elderlyName = _elderlyNameText.getText().toString();
 
         final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
             @Override
@@ -160,8 +166,8 @@ public class SignupFragment extends DialogFragment implements SignupFragmentCall
                 progressDialog.dismiss();
             }
         };
-        RestApiDispenser.getSimpleApiInstance().registerUser(new User(username,name,"",password), callback);
-
+        RestApiDispenser.getSimpleApiInstance().registerUser(new User(username,name,"",password, null), callback);
+        RestApiDispenser.getSimpleApiInstance().registerUser(new User(elderlyUserName,elderlyName,"",password, username), callback);
     }
 
 

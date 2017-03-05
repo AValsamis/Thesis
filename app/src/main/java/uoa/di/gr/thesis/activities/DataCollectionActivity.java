@@ -32,6 +32,7 @@ public class DataCollectionActivity extends Activity {
     DataCollectionService dataCollectionService;
     boolean mBound = false;
     AppCompatButton collectionButton;
+    boolean isServiceRunning = false;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -56,16 +57,19 @@ public class DataCollectionActivity extends Activity {
     @Override
     public void onStart() {
         super.onStart();
+        Log.i("STARTED","STARTED");
 
         i = new Intent(this, DataCollectionService.class);
         bindService(i, mConnection, Context.BIND_AUTO_CREATE);
         // potentially add data to the intent
 //        i.putExtra("KEY1", "Value to be used by the service");
-        if(mBound) {
-            if (dataCollectionService.checkStarted()) {
-                collectionButton.setText("Stop scanning");
-            }
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        isServiceRunning = prefs.getBoolean("PREF_IS_RUNNING",false);
+        if (isServiceRunning) {
+            collectionButton.setText("Stop scanning");
         }
+
     }
 
     @Override
@@ -81,8 +85,11 @@ public class DataCollectionActivity extends Activity {
     public void startStopCollection(View view) {
         try
         {
-            if(mBound) {
-                if (dataCollectionService.checkStarted()) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            isServiceRunning = prefs.getBoolean("PREF_IS_RUNNING",false);
+
+//            if(mBound) {
+                if (isServiceRunning) {
                     Log.i("TESTTTTTTTTTT", "TESTTTTTTTTTTTTTT");
                     dataCollectionService.unregisterListeners();
                     showToast("Stopping the collection...");
@@ -92,7 +99,7 @@ public class DataCollectionActivity extends Activity {
                     collectionButton.setText("Stop scanning");
 
                 }
-            }
+//            }
         } catch (IllegalArgumentException ex) {
             Logger.getLogger(DataCollectionActivity.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalStateException ex) {

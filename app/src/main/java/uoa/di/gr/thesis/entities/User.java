@@ -19,13 +19,16 @@ public class User {
     @Expose
     private String password = "";
 
+    private String responsibleUserName;
+
     public User(){}
 
-    public User(String username, String name, String surname, String password) {
+    public User(String username, String name, String surname, String password, String responsibleUserName) {
         this.username = username;
         this.name = name;
         this.surname = surname;
         this.password = password;
+        this.responsibleUserName = responsibleUserName;
     }
 
 
@@ -73,12 +76,21 @@ public class User {
         this.surname = surname;
     }
 
+    public String getResponsibleUserName() {
+        return responsibleUserName;
+    }
+
+    public void setResponsibleUserName(String responsibleUserName) {
+        this.responsibleUserName = responsibleUserName;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "username='" + username + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
+                ", responsibleUserName='" + responsibleUserName +
                 '}';
     }
 }

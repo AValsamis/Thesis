@@ -32,18 +32,46 @@
                 android:hint="@string/name" />
         </uoa.di.gr.thesis.entities.CustomTextInputLayout>
 
-        <!--  Email Label -->
+        <!--  Username Label -->
         <uoa.di.gr.thesis.entities.CustomTextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp">
             <EditText android:id="@+id/input_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="@string/username"/>
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:inputType="textEmailAddress"
+                      android:hint="@string/username"/>
         </uoa.di.gr.thesis.entities.CustomTextInputLayout>
+
+        <!-- ElderlyName Label -->
+        <uoa.di.gr.thesis.entities.CustomTextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+
+            <EditText android:id="@+id/input_elderly_name"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:inputType="textCapWords"
+                      android:hint="@string/elderly_name" />
+        </uoa.di.gr.thesis.entities.CustomTextInputLayout>
+
+        <!-- ElderlyUserName Label -->
+        <uoa.di.gr.thesis.entities.CustomTextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+            <EditText android:id="@+id/input_elderly_user_name"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:inputType="textCapWords"
+                      android:hint="@string/elderly_username" />
+        </uoa.di.gr.thesis.entities.CustomTextInputLayout>
+
         <!-- Password Label -->
         <uoa.di.gr.thesis.entities.CustomTextInputLayout
             android:layout_width="match_parent"
