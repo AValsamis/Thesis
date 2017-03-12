@@ -71,8 +71,9 @@ public class DataCollectionService extends Service implements SensorEventListene
     private ArrayList<AccelerometerStats> accelerometerStatsArrayList = new ArrayList<>();
     private ArrayList<OrientationStats> orientationStatsArrayList = new ArrayList<>();
     Handler h = new Handler();
+    boolean isRunning = false;
     int delay = 10000; //milliseconds
-
+    String o = Integer.toString(new Object().hashCode());
     /**
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
@@ -91,30 +92,16 @@ public class DataCollectionService extends Service implements SensorEventListene
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         user.setUsername(prefs.getString("username", "nobody"));
 
-        setRunning(true);
+        if (!isRunning) {
+            isRunning = true;
 
-//        h.postDelayed(new Runnable(){
-//            public void run(){
-//                //do something
-//                int fallDetected = RestApiDispenser.getSimpleApiInstance().fallDetection(user.getId());
-//                if(fallDetected == 1)
-//                {
-//
-//                }
-//                else if(fallDetected==2)
-//                {
-//
-//                }
-//                h.postDelayed(this, delay);
-//            }
-//        }, delay);
+            collectData();
+            Calendar cal = Calendar.getInstance();
 
-        collectData();
-        Calendar cal = Calendar.getInstance();
-
-        AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 10*1000, pintent);
-
+            AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 10 * 1000, pintent);
+            Log.i(o, "Service started");
+        }
         return Service.START_NOT_STICKY;
     }
 
@@ -144,7 +131,7 @@ public class DataCollectionService extends Service implements SensorEventListene
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
-
+        Log.i(o, "Service sensor changed");
         if(accelerometerStatsArrayList.size() > 5)
         {
             dataPacket.setUser(user);
@@ -227,7 +214,7 @@ public class DataCollectionService extends Service implements SensorEventListene
     public void unregisterListeners()
     {
         mSensorManager.unregisterListener(this);
-        setRunning(false);
+        isRunning = false;
         this.stopSelf();
     }
 
@@ -235,25 +222,11 @@ public class DataCollectionService extends Service implements SensorEventListene
     public void onDestroy()
     {
         super.onDestroy();
-        setRunning(false);
+        isRunning=false;
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-
-    private void setRunning(boolean running) {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = pref.edit();
-
-        editor.putBoolean("PREF_IS_RUNNING", running);
-        editor.apply();
-    }
-
-    public static boolean isRunning(Context ctx) {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx.getApplicationContext());
-        return pref.getBoolean("PREF_IS_RUNNING", false);
-    }
-
 }

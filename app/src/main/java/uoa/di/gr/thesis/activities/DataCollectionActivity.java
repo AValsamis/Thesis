@@ -39,19 +39,18 @@ public class DataCollectionActivity extends Activity {
 
         Log.i("INSIDE DATACOLLECTION", "Hi");
         super.onCreate(icicle);
-        setContentView(R.layout.data_collection);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         user.setUsername(prefs.getString("username", "nobody"));
 
-        collectionButton = (AppCompatButton) this.findViewById(R.id.stopCollection);
+        /*collectionButton = (AppCompatButton) this.findViewById(R.id.stopCollection);
         collectionButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
                 startStopCollection(view);
             }
-        });
+        });*/
     }
 
     @Override
@@ -61,24 +60,18 @@ public class DataCollectionActivity extends Activity {
 
         i = new Intent(this, DataCollectionService.class);
         bindService(i, mConnection, Context.BIND_AUTO_CREATE);
-        // potentially add data to the intent
-//        i.putExtra("KEY1", "Value to be used by the service");
+        this.startService(i);
+        finish();
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        isServiceRunning = prefs.getBoolean("PREF_IS_RUNNING",false);
-        if (isServiceRunning) {
-            collectionButton.setText("Stop scanning");
-        }
-
-    }
+   }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mBound) {
+       // if (mBound) {
             unbindService(mConnection);
-            mBound = false;
-        }
+       //     mBound = false;
+       // }
     }
 
 
@@ -90,10 +83,10 @@ public class DataCollectionActivity extends Activity {
 
 //            if(mBound) {
                 if (isServiceRunning) {
-                    Log.i("TESTTTTTTTTTT", "TESTTTTTTTTTTTTTT");
-                    dataCollectionService.unregisterListeners();
-                    showToast("Stopping the collection...");
-                    collectionButton.setText("Start scanning");
+                  //  Log.i("TESTTTTTTTTTT", "TESTTTTTTTTTTTTTT");
+                  //  dataCollectionService.unregisterListeners();
+                  //  showToast("Stopping the collection...");
+                  //  collectionButton.setText("Start scanning");
                 } else {
                     this.startService(i);
                     collectionButton.setText("Stop scanning");

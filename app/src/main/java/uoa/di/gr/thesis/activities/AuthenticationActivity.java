@@ -17,6 +17,7 @@ import uoa.di.gr.thesis.fragments.authenticate.LoginFragment;
 import uoa.di.gr.thesis.fragments.authenticate.SignupFragment;
 import uoa.di.gr.thesis.interfaces.LoginFragmentCallbacks;
 import uoa.di.gr.thesis.interfaces.SignupFragmentCallbacks;
+import uoa.di.gr.thesis.services.DataCollectionService;
 
 
 /**
@@ -40,12 +41,13 @@ public class AuthenticationActivity  extends AppCompatActivity implements LoginF
             Log.i("USERNAME",username);
 
             if(isElderly) {
-                intent = new Intent(this, MainActivity2.class);
+                startElderlyService();
             }
             else {
                 intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
             }
-            startActivity(intent);
+
             this.finish();
 
         }
@@ -95,12 +97,13 @@ public class AuthenticationActivity  extends AppCompatActivity implements LoginF
 
         Intent intent;
         if(isElderly) {
-            intent = new Intent(this, MainActivity2.class);
+            startElderlyService();
         }
         else {
             intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         }
-        startActivity(intent);
+
         this.finish();
     }
 
@@ -120,6 +123,13 @@ public class AuthenticationActivity  extends AppCompatActivity implements LoginF
                 ft.commit();
             }
         }
+    }
+
+    void startElderlyService(){
+        Intent dialogIntent = new Intent(this, DataCollectionActivity.class);
+        dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(dialogIntent);
+        finish();
     }
 
     @Override
