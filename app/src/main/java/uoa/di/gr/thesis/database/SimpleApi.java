@@ -60,6 +60,17 @@ public interface SimpleApi
     @GET(Constants.URL_IS_ELDERLY)
     boolean isElderly(@Path("username") String username);
 
+    @GET(Constants.URL_SHOULD_RUN)
+    void getShouldRunService(@Path("username") String username, Callback<SimpleResponse> cb);
+
+    @POST(Constants.URL_START_SCAN)
+    void startScanService(@Body User user, Callback<SimpleResponse> cb);
+
+    @POST(Constants.URL_STOP_SCAN)
+    void stopScanService(@Body User user, Callback<SimpleResponse> cb);
+
+
+
     /*(@GET(Constants.URL_EVENTS)
     void getEvents(Callback<List<Event>> dataCallback);
 

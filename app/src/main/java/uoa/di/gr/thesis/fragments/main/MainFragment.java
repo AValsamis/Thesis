@@ -57,9 +57,9 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks, Ma
     private RegisterZoneCallbacks registerZoneCallback;
     private MainFragmentCallbacks mainFragmentCallback;
     protected final CallbacksManager callbacksManager = new CallbacksManager();
-
+    AppCompatButton collection;
     TextView test;
-
+    boolean started=false;
     public String zoneName = "";
     protected final int SCAN_TIMES=10;
     ProgressDialog progressDialog ;
@@ -330,14 +330,73 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks, Ma
             }
         });
 
-        AppCompatButton collection = (AppCompatButton) getActivity().findViewById(R.id.collection);
+        collection = (AppCompatButton) getActivity().findViewById(R.id.collection);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String username = prefs.getString("username", "nobody");
+
+        final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
+            @Override
+            protected void onSuccess(SimpleResponse response, Response response2) {
+                if (response.getOk()) {
+                    started = true;
+                    collection.setText("Stop Scanning");
+                }
+                else{
+                    started = false;
+                    collection.setText("Start Scanning");
+                }
+            }
+            @Override
+            protected void onFailure(RetrofitError error) {
+            }
+        };
+        RestApiDispenser.getSimpleApiInstance().getShouldRunService(username, callback);
+
         collection.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                mainFragmentCallback.startDataCollectionFragment();
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String username = prefs.getString("username", "nobody");
+                User user = new User();
+                user.setUsername(username);
+                if (!started) {
+                    final CallbacksManager.CancelableCallback<SimpleResponse> callback2 = callbacksManager.new CancelableCallback<SimpleResponse>() {
+                        @Override
+                        protected void onSuccess(SimpleResponse response, Response response2) {
+                            if (response.getOk()) {
+                                collection.setText("Stop Scanning");
+                                started = true;
+                            }
+                        }
 
-            }
+                        @Override
+                        protected void onFailure(RetrofitError error) {
+
+                        }
+                    };
+
+                    RestApiDispenser.getSimpleApiInstance().startScanService(user, callback2);
+                }
+                else
+                {
+                     final CallbacksManager.CancelableCallback<SimpleResponse> callback3 = callbacksManager.new CancelableCallback<SimpleResponse>() {
+                            @Override
+                            protected void onSuccess(SimpleResponse response, Response response2) {
+                                if (response.getOk()) {
+                                    collection.setText("Start Scanning");
+                                    started = false;
+                                }
+                            }
+
+                            @Override
+                            protected void onFailure(RetrofitError error) {
+
+                            }
+                        };
+                        RestApiDispenser.getSimpleApiInstance().stopScanService(user, callback3);
+                    }
+                }
         });
 
         setRetainInstance(true);

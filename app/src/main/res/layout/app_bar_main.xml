@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center|center"
         android:layout_marginTop="@dimen/fab_margin"
-        android:text="Scan"
+        android:text="Start Scanning"
          />
 
     <include layout="@layout/content_main"

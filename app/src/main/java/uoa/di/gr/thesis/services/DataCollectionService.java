@@ -72,6 +72,7 @@ public class DataCollectionService extends Service implements SensorEventListene
     private ArrayList<OrientationStats> orientationStatsArrayList = new ArrayList<>();
     Handler h = new Handler();
     boolean isRunning = false;
+    boolean toFinishService = false;
     int delay = 10000; //milliseconds
     String o = Integer.toString(new Object().hashCode());
     /**
@@ -87,8 +88,6 @@ public class DataCollectionService extends Service implements SensorEventListene
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         user.setUsername(prefs.getString("username", "nobody"));
 
@@ -97,7 +96,34 @@ public class DataCollectionService extends Service implements SensorEventListene
 
             collectData();
             Calendar cal = Calendar.getInstance();
-
+            new Thread()
+            {
+                public void run() {
+                    while (true){
+                        final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
+                            @Override
+                            protected void onSuccess(SimpleResponse response, Response response2) {
+                                if (response.getOk()) {
+                                    toFinishService = false;
+                                }
+                                else{
+                                    toFinishService = true;
+                                    stopSelf();
+                                }
+                            }
+                            @Override
+                            protected void onFailure(RetrofitError error) {
+                            }
+                        };
+                        RestApiDispenser.getSimpleApiInstance().getShouldRunService(user.getUsername(), callback);
+                        try {
+                            Thread.sleep(10000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }.start();
             AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 10 * 1000, pintent);
             Log.i(o, "Service started");
@@ -114,11 +140,11 @@ public class DataCollectionService extends Service implements SensorEventListene
     public void collectData()
     {
         try {
-            mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-            mAccelerometer=mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-            mMagnetic=mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-            mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-            mSensorManager.registerListener(this, mMagnetic,  SensorManager.SENSOR_DELAY_NORMAL);
+                mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+                mAccelerometer=mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+                mMagnetic=mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+                mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+                mSensorManager.registerListener(this, mMagnetic,  SensorManager.SENSOR_DELAY_NORMAL);
 
         } catch (IllegalArgumentException ex) {
             Logger.getLogger(DataCollectionActivity.class.getName()).log(Level.SEVERE, null, ex);
@@ -132,6 +158,9 @@ public class DataCollectionService extends Service implements SensorEventListene
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
         Log.i(o, "Service sensor changed");
+
+        if (toFinishService) stopSelf();
+
         if(accelerometerStatsArrayList.size() > 5)
         {
             dataPacket.setUser(user);
