@@ -159,7 +159,7 @@ public class DataCollectionService extends Service implements SensorEventListene
         Sensor sensor = event.sensor;
         Log.i(o, "Service sensor changed");
 
-        if (toFinishService) stopSelf();
+        if (toFinishService) unregisterListeners();
 
         if(accelerometerStatsArrayList.size() > 5)
         {
@@ -244,7 +244,36 @@ public class DataCollectionService extends Service implements SensorEventListene
     {
         mSensorManager.unregisterListener(this);
         isRunning = false;
-        this.stopSelf();
+        new Thread()
+        {
+            public void run() {
+                while (true){
+                    final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
+                        @Override
+                        protected void onSuccess(SimpleResponse response, Response response2) {
+                            if (response.getOk()) {
+                                toFinishService = false;
+                                collectData();
+                                stopSelf();
+                            }
+                            else{
+                                toFinishService = true;
+//                                stopSelf();
+                            }
+                        }
+                        @Override
+                        protected void onFailure(RetrofitError error) {
+                        }
+                    };
+                    RestApiDispenser.getSimpleApiInstance().getShouldRunService(user.getUsername(), callback);
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
     }
 
     @Override
