@@ -43,26 +43,16 @@ public class DataCollectionActivity extends Activity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         user.setUsername(prefs.getString("username", "nobody"));
 
-        /*collectionButton = (AppCompatButton) this.findViewById(R.id.stopCollection);
-        collectionButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                startStopCollection(view);
-            }
-        });*/
+        i = new Intent(this, DataCollectionService.class);
+        bindService(i, mConnection, Context.BIND_AUTO_CREATE);
+        this.startService(i);
+        Toast.makeText(this, "Started data collection", Toast.LENGTH_LONG).show();
+        finish();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.i("STARTED","STARTED");
-
-        i = new Intent(this, DataCollectionService.class);
-        bindService(i, mConnection, Context.BIND_AUTO_CREATE);
-        this.startService(i);
-        finish();
-
    }
 
     @Override

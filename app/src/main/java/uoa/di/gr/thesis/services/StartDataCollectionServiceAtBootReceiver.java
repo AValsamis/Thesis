@@ -18,7 +18,7 @@ public class StartDataCollectionServiceAtBootReceiver extends BroadcastReceiver 
     public void onReceive(Context context, Intent intent) {
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             Intent activityIntent = new Intent(context, DataCollectionActivity.class);
-
+            activityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             boolean isElderly = prefs.getBoolean("iselderly",false);
             if(isElderly)
