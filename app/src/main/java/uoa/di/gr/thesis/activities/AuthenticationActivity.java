@@ -30,11 +30,6 @@ public class AuthenticationActivity  extends AppCompatActivity implements LoginF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authenticate);
-        // TODO check
-        ///if (android.os.Build.VERSION.SDK_INT > 9) {
-        //    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        //    StrictMode.setThreadPolicy(policy);
-        //}
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Intent intent;
