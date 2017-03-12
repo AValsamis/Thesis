@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
@@ -37,9 +36,7 @@ import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import uoa.di.gr.thesis.R;
-import uoa.di.gr.thesis.activities.DataCollectionActivity;
 import uoa.di.gr.thesis.database.RestApiDispenser;
-import uoa.di.gr.thesis.database.SimpleApi;
 import uoa.di.gr.thesis.entities.SimpleResponse;
 import uoa.di.gr.thesis.entities.User;
 import uoa.di.gr.thesis.entities.Wifi;
@@ -61,7 +58,8 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks, Ma
     private MainFragmentCallbacks mainFragmentCallback;
     protected final CallbacksManager callbacksManager = new CallbacksManager();
 
-        TextView test;
+    TextView test;
+
     public String zoneName = "";
     protected final int SCAN_TIMES=10;
     ProgressDialog progressDialog ;
@@ -363,7 +361,7 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks, Ma
             @Override
             protected void onSuccess(SimpleResponse response, Response response2) {
                 progressDialog.dismiss();
-                if (response.getIsOk())
+                if (response.getOk())
                     registerZoneCallback.onRegisterZoneSuccess(response.getResponse());
                 else
                     registerZoneCallback.onRegisterZoneFailure(response.getResponse());

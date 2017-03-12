@@ -69,7 +69,10 @@ public class ZoneActivity extends AppCompatActivity {
 
     class PagerAdapter extends FragmentPagerAdapter {
 
-        String tabTitles[] = new String[] { "Safe Zones", "Danger Zones" };
+        String tabTitles[] = new String[] {
+                "Safe Zones",
+                "Danger Zones"
+        };
         Context context;
 
         public PagerAdapter(FragmentManager fm, Context context) {

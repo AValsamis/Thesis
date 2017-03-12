@@ -116,20 +116,22 @@ public class LoginFragment extends Fragment implements LoginFragmentCallbacks {
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
 
-        String username = _usernameText.getText().toString();
+        final String username = _usernameText.getText().toString();
         String password = _passwordText.getText().toString();
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        final SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("username", username);
-        editor.putBoolean("log",true);
-        editor.apply();
 
         final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
             @Override
             protected void onSuccess(SimpleResponse response, Response response2) {
                 System.out.println(response.getResponse());
-                if (response.getIsOk())
+
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+                final SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("username", username);
+                editor.putBoolean("log",true);
+                editor.putBoolean("iselderly",response.getElderly());
+                editor.apply();
+
+                if (response.getOk())
                     onLoginSuccess();
                 else
                     onLoginFailed(response.getResponse());
@@ -214,6 +216,4 @@ public class LoginFragment extends Fragment implements LoginFragmentCallbacks {
     @Override
     public void clickedRegister() {
     }
-
-
 }

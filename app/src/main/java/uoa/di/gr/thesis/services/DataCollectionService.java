@@ -159,7 +159,7 @@ public class DataCollectionService extends Service implements SensorEventListene
 
                 @Override
                 protected void onSuccess(SimpleResponse response, Response response2) {
-                    if (response.getIsOk()){}
+                    if (response.getOk()){}
 //                        Toast.makeText(getApplicationContext(), "Success! " + response.getResponse(), Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(getApplicationContext(), response.getResponse(), Toast.LENGTH_SHORT).show();

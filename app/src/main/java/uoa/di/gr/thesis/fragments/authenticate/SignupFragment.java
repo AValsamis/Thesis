@@ -154,7 +154,7 @@ public class SignupFragment extends DialogFragment implements SignupFragmentCall
             @Override
             protected void onSuccess(SimpleResponse response, Response response2) {
                 System.out.println(response.getResponse());
-                if (response.getIsOk())
+                if (response.getOk())
                     onSignupSuccess();
                 else
                     onSignupFailed(response.getResponse());

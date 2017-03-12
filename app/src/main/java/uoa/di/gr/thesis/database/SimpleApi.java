@@ -4,8 +4,6 @@ package uoa.di.gr.thesis.database;
  * Created by Sevle on 2/16/2015.
  */
 
-import com.squareup.okhttp.ResponseBody;
-
 import java.util.List;
 
 import retrofit.Callback;
@@ -17,7 +15,6 @@ import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.Part;
 import retrofit.http.Path;
-import retrofit.http.Query;
 import uoa.di.gr.thesis.entities.AccelerometerStats;
 import uoa.di.gr.thesis.entities.DataPacket;
 import uoa.di.gr.thesis.entities.SimpleResponse;
@@ -27,7 +24,7 @@ import uoa.di.gr.thesis.entities.Zone;
 
 public interface SimpleApi
 {
-    public static final String BASE_URL = "http://192.168.1.81:8080/";
+    String BASE_URL = "http://192.168.1.81:8080/";
 
 
     @POST(Constants.URL_USERS)

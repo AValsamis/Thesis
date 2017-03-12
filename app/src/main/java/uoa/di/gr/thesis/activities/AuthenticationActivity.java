@@ -31,17 +31,19 @@ public class AuthenticationActivity  extends AppCompatActivity implements LoginF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authenticate);
         // TODO check
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
+        ///if (android.os.Build.VERSION.SDK_INT > 9) {
+        //    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        //    StrictMode.setThreadPolicy(policy);
+        //}
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Intent intent;
         if (preferences.getBoolean("log", false)) {
             String username=preferences.getString("username","nobody");
+            Boolean isElderly=preferences.getBoolean("iselderly",false);
+
             Log.i("USERNAME",username);
-            boolean isElderly = RestApiDispenser.getSimpleApiInstance().isElderly(username);
+
             if(isElderly) {
                 intent = new Intent(this, MainActivity2.class);
             }
@@ -94,7 +96,8 @@ public class AuthenticationActivity  extends AppCompatActivity implements LoginF
         fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String username=preferences.getString("username","nobody");
-        boolean isElderly = RestApiDispenser.getSimpleApiInstance().isElderly(username);
+        Boolean isElderly=preferences.getBoolean("iselderly",false);
+
         Intent intent;
         if(isElderly) {
             intent = new Intent(this, MainActivity2.class);
@@ -104,7 +107,6 @@ public class AuthenticationActivity  extends AppCompatActivity implements LoginF
         }
         startActivity(intent);
         this.finish();
-
     }
 
     //FRAGMENT "REGISTER" CALLBACKS

@@ -11,19 +11,24 @@ public class SimpleResponse {
     private String response;
 
     @Expose
-    private Boolean isOk;
+    private Boolean ok;
 
+    @Expose
+    private Boolean elderly;
 
-    public SimpleResponse(String s) {
-        this.response = s;
+    public SimpleResponse() {
     }
 
-    public SimpleResponse(String s,Boolean isOk) {
-
-        this.response = s;
-        this.isOk = isOk;
+    public SimpleResponse(String response, Boolean ok) {
+        this.response = response;
+        this.ok = ok;
     }
 
+    public SimpleResponse(String response, Boolean ok, Boolean elderly) {
+        this.response = response;
+        this.ok = ok;
+        this.elderly = elderly;
+    }
 
     public String getResponse() {
         return response;
@@ -33,18 +38,28 @@ public class SimpleResponse {
         this.response = response;
     }
 
-    public Boolean getIsOk() {
-        return isOk;
+    public Boolean getOk() {
+        return ok;
     }
 
-    public void setIsOk(Boolean isOk) {
-        this.isOk = isOk;
+    public void setOk(Boolean ok) {
+        this.ok = ok;
     }
+
+    public Boolean getElderly() {
+        return elderly;
+    }
+
+    public void setElderly(Boolean elderly) {
+        this.elderly = elderly;
+    }
+
     @Override
     public String toString() {
         return "SimpleResponse{" +
                 "response='" + response + '\'' +
-                ", isOk=" + isOk +
+                ", ok=" + ok +
+                ", elderly=" + elderly +
                 '}';
     }
 }
