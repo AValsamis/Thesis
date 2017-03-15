@@ -49,6 +49,13 @@
             <!--android:label="@string/service_name"-->
 
         </service>
+        <service
+            android:name=".services.FallDetectionService">
+            <!--android:icon="@drawable/icon"-->
+            <!--android:label="@string/service_name"-->
+
+        </service>
+
         <receiver
             android:name=".services.StartDataCollectionServiceAtBootReceiver"
             android:label="StartDataCollectionServiceAtBootReceiver">
@@ -56,6 +63,11 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".services.AlarmReceiver"
+            android:exported="false">
+        </receiver>
+
     </application>
 
 </manifest>

@@ -115,4 +115,11 @@ public class DataCollectionActivity extends Activity {
             mBound = false;
         }
     };
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        unbindService(mConnection);
+    }
 }

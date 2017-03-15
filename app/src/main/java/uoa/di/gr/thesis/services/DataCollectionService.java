@@ -124,9 +124,6 @@ public class DataCollectionService extends Service implements SensorEventListene
                     }
                 }
             }.start();
-            AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 10 * 1000, pintent);
-            Log.i(o, "Service started");
         }
         return Service.START_NOT_STICKY;
     }
@@ -145,6 +142,13 @@ public class DataCollectionService extends Service implements SensorEventListene
                 mMagnetic=mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
                 mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
                 mSensorManager.registerListener(this, mMagnetic,  SensorManager.SENSOR_DELAY_NORMAL);
+                AlarmManager alarmManager=(AlarmManager) this.getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+                Intent intent2 = new Intent(this.getApplicationContext(), AlarmReceiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 0, intent2, 0);
+                // every 9 minutes we search the last 10 minutes of accelerometer_stats to include
+                // falls that may occur between two batches of 10 minutes
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,System.currentTimeMillis(),60000,
+                        pendingIntent);
 
         } catch (IllegalArgumentException ex) {
             Logger.getLogger(DataCollectionActivity.class.getName()).log(Level.SEVERE, null, ex);
@@ -274,6 +278,11 @@ public class DataCollectionService extends Service implements SensorEventListene
                 }
             }
         }.start();
+        AlarmManager alarmManager=(AlarmManager) this.getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this.getApplicationContext(), AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 0, intent, 0);
+        alarmManager.cancel(pendingIntent);
+
     }
 
     @Override
