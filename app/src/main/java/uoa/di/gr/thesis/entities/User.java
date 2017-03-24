@@ -21,6 +21,8 @@ public class User {
 
     private String responsibleUserName;
 
+    @Expose
+    private String token= "";
     public User(){}
 
     public User(String username, String name, String surname, String password, String responsibleUserName) {
@@ -29,8 +31,25 @@ public class User {
         this.surname = surname;
         this.password = password;
         this.responsibleUserName = responsibleUserName;
+
     }
 
+    public User(String username, String name, String surname, String password, String responsibleUserName, String token) {
+        this.username = username;
+        this.name = name;
+        this.surname = surname;
+        this.password = password;
+        this.responsibleUserName = responsibleUserName;
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public User(long id) {
         this.id = id;

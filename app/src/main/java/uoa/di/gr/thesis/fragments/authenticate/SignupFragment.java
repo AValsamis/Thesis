@@ -162,7 +162,10 @@ public class SignupFragment extends DialogFragment implements SignupFragmentCall
             }
             @Override
             protected void onFailure(RetrofitError error) {
-                onSignupFailed(error.getResponse().getReason());
+                if (error.getResponse()!=null)
+                    onSignupFailed(error.getResponse().getReason());
+                else
+                    onSignupFailed("500 Server Internal Error");
                 progressDialog.dismiss();
             }
         };

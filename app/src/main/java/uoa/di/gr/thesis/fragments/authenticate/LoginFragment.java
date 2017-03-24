@@ -118,32 +118,39 @@ public class LoginFragment extends Fragment implements LoginFragmentCallbacks {
 
         final String username = _usernameText.getText().toString();
         String password = _passwordText.getText().toString();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+        String deviceToken = prefs.getString("token","");
+        if (deviceToken.isEmpty()){
+            progressDialog.dismiss();
+            onLoginFailed("Sorry, your device does not have a token registered yet. Please try later or reinstall device");
+        }
+        else {
+            final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
+                @Override
+                protected void onSuccess(SimpleResponse response, Response response2) {
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
+                    final SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("username", username);
+                    editor.putBoolean("log", true);
+                    editor.putBoolean("iselderly", response.getElderly());
+                    editor.apply();
 
+                    System.out.println(response.getResponse());
+                    if (response.getOk())
+                        onLoginSuccess();
+                    else
+                        onLoginFailed(response.getResponse());
+                    progressDialog.dismiss();
+                }
 
-        final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
-            @Override
-            protected void onSuccess(SimpleResponse response, Response response2) {
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-                final SharedPreferences.Editor editor = prefs.edit();
-                editor.putString("username", username);
-                editor.putBoolean("log",true);
-                editor.putBoolean("iselderly", response.getElderly());
-                editor.apply();
-
-                System.out.println(response.getResponse());
-                if (response.getOk())
-                    onLoginSuccess();
-                else
-                    onLoginFailed(response.getResponse());
-                progressDialog.dismiss();
-            }
-            @Override
-            protected void onFailure(RetrofitError error) {
-                onLoginFailed(error.getResponse().getReason());
-                progressDialog.dismiss();
-            }
-        };
-        RestApiDispenser.getSimpleApiInstance().loginUser(username,password, callback);
+                @Override
+                protected void onFailure(RetrofitError error) {
+                    onLoginFailed(error.getResponse().getReason());
+                    progressDialog.dismiss();
+                }
+            };
+            RestApiDispenser.getSimpleApiInstance().loginUser(username, password, deviceToken, callback);
+        }
     }
 
     @Override

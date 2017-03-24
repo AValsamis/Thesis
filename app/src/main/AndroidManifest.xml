@@ -3,6 +3,7 @@
     package="uoa.di.gr.thesis">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -55,7 +56,18 @@
             <!--android:label="@string/service_name"-->
 
         </service>
-
+        <service
+            android:name=".services.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name=".services.NotificationGenie">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
         <receiver
             android:name=".services.StartDataCollectionServiceAtBootReceiver"
             android:label="StartDataCollectionServiceAtBootReceiver">

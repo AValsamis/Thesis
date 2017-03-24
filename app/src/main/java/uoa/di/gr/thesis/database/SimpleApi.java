@@ -24,7 +24,7 @@ import uoa.di.gr.thesis.entities.Zone;
 
 public interface SimpleApi
 {
-    String BASE_URL = "http://192.168.1.81:8080/";
+    String BASE_URL = "http://192.168.1.65:8080/";
 
 
     @POST(Constants.URL_USERS)
@@ -36,7 +36,7 @@ public interface SimpleApi
 
     @POST(Constants.URL_LOGIN)
     @FormUrlEncoded
-    void loginUser(@Field("username") String username, @Field("password") String  password, Callback<SimpleResponse> cb);
+    void loginUser(@Field("username") String username, @Field("password") String  password , @Field("token") String  token, Callback<SimpleResponse> cb);
 
     @Multipart
     @POST(Constants.URL_REGISTERZONE)
@@ -69,6 +69,9 @@ public interface SimpleApi
     @POST(Constants.URL_STOP_SCAN)
     void stopScanService(@Body User user, Callback<SimpleResponse> cb);
 
+    @POST(Constants.REFRESH_TOKEN)
+    @FormUrlEncoded
+    void refreshToken(@Field("username") String username, @Field("token") String token, Callback<SimpleResponse> cb);
 
 
     /*(@GET(Constants.URL_EVENTS)
