@@ -16,7 +16,7 @@ import uoa.di.gr.thesis.database.RestApiDispenser;
  * Created by skand on 3/15/2017.
  */
 
-public class AlarmReceiver extends BroadcastReceiver
+public class FallAlarmReceiver extends BroadcastReceiver
 {
     @Override
     public void onReceive(Context context, Intent intent)

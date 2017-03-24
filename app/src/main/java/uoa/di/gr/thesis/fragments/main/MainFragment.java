@@ -325,7 +325,11 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks, Ma
                     }
                     Log.i("DEBUG", Arrays.asList(wifis).toString());
                 }
-                SimpleResponse zone = RestApiDispenser.getSimpleApiInstance().getZone(wifis);
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String username = prefs.getString("username", "nobody");
+                User user = new User();
+                user.setUsername(username);
+                SimpleResponse zone = RestApiDispenser.getSimpleApiInstance().getZone(wifis, user);
                 Toast.makeText(getActivity(), "Elderly is in zone with name: " + zone.getResponse(), Toast.LENGTH_SHORT).show();
             }
         });

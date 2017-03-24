@@ -4,6 +4,8 @@ package uoa.di.gr.thesis.database;
  * Created by Sevle on 2/16/2015.
  */
 
+import android.telecom.Call;
+
 import java.util.List;
 
 import retrofit.Callback;
@@ -36,14 +38,14 @@ public interface SimpleApi
 
     @POST(Constants.URL_LOGIN)
     @FormUrlEncoded
-    void loginUser(@Field("username") String username, @Field("password") String  password , @Field("token") String  token, Callback<SimpleResponse> cb);
+    void loginUser(@Field("username") String username, @Field("password") String  password, @Field("token") String token, Callback<SimpleResponse> cb);
 
     @Multipart
     @POST(Constants.URL_REGISTERZONE)
     void registerZone(@Part("wifi") List<Wifi> wifis, @Part("zone")Zone zone, Callback<SimpleResponse> cb);
 
     @POST(Constants.URL_FIND_ZONE)
-    SimpleResponse getZone(@Body List<Wifi> signalStrengths);
+    SimpleResponse getZone(@Part("wifi") List<Wifi> signalStrengths, @Part("user")User user);
 
     @GET(Constants.URL_SAFE_ZONES)
     List<Zone> getSafeZones(@Path("user") String userId);
@@ -55,7 +57,7 @@ public interface SimpleApi
     void sendDataPacket(@Body DataPacket dataPacket, Callback<SimpleResponse> cb);
 
     @GET(Constants.URL_FALL_DETECTION)
-    int fallDetection(@Path("username") String username);
+    void fallDetection(@Path("username") String username, Callback<SimpleResponse> cb);
 
     @GET(Constants.URL_IS_ELDERLY)
     boolean isElderly(@Path("username") String username);
@@ -69,9 +71,6 @@ public interface SimpleApi
     @POST(Constants.URL_STOP_SCAN)
     void stopScanService(@Body User user, Callback<SimpleResponse> cb);
 
-    @POST(Constants.REFRESH_TOKEN)
-    @FormUrlEncoded
-    void refreshToken(@Field("username") String username, @Field("token") String token, Callback<SimpleResponse> cb);
 
 
     /*(@GET(Constants.URL_EVENTS)

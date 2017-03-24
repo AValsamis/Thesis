@@ -7,6 +7,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -21,6 +22,7 @@ import uoa.di.gr.thesis.utils.CallbacksManager;
 public class FallDetectionService extends Service {
 
     private final IBinder mBinder = new FallDetectionService.LocalBinder();
+    protected final CallbacksManager callbacksManager = new CallbacksManager();
 
     public class LocalBinder extends Binder {
         public FallDetectionService getService() {
@@ -38,13 +40,19 @@ public class FallDetectionService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-        new Thread()
-        {
-            public void run() {
-                RestApiDispenser.getSimpleApiInstance().fallDetection(prefs.getString("username","nobody"));
+
+        final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
+            @Override
+            protected void onSuccess(SimpleResponse response, Response response2) {
+                System.out.println(response.getResponse());
             }
 
-        }.start();
-        return Service.START_NOT_STICKY;
+            @Override
+            protected void onFailure(RetrofitError error) {
+            }
+        };
+        Log.d("FallDetectionService","Fall detection service called");
+        RestApiDispenser.getSimpleApiInstance().fallDetection(prefs.getString("username", "nobody"), callback);
+        return START_NOT_STICKY;
     }
 }

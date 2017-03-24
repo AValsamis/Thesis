@@ -3,7 +3,6 @@
     package="uoa.di.gr.thesis">
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -68,6 +67,13 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
+        <service
+            android:name=".services.ZoneDetetectionService">
+            <!--android:icon="@drawable/icon"-->
+            <!--android:label="@string/service_name"-->
+
+        </service>
+
         <receiver
             android:name=".services.StartDataCollectionServiceAtBootReceiver"
             android:label="StartDataCollectionServiceAtBootReceiver">
@@ -76,7 +82,11 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".services.AlarmReceiver"
+            android:name=".services.FallAlarmReceiver"
+            android:exported="false">
+        </receiver>
+        <receiver
+            android:name=".services.FallAlarmReceiver"
             android:exported="false">
         </receiver>
 
