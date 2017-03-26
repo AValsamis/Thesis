@@ -26,7 +26,7 @@ import uoa.di.gr.thesis.entities.Zone;
 
 public interface SimpleApi
 {
-    String BASE_URL = "http://192.168.1.65:8080/";
+    String BASE_URL = "http://192.168.1.6:8080/";
 
 
     @POST(Constants.URL_USERS)
@@ -56,8 +56,8 @@ public interface SimpleApi
     @POST(Constants.URL_SEND_DATA_PACKET)
     void sendDataPacket(@Body DataPacket dataPacket, Callback<SimpleResponse> cb);
 
-    @GET(Constants.URL_FALL_DETECTION)
-    void fallDetection(@Path("username") String username, Callback<SimpleResponse> cb);
+//    @GET(Constants.URL_FALL_DETECTION)
+//    void fallDetection(@Path("username") String username, Callback<SimpleResponse> cb);
 
     @GET(Constants.URL_IS_ELDERLY)
     boolean isElderly(@Path("username") String username);

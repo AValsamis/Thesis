@@ -50,12 +50,6 @@
 
         </service>
         <service
-            android:name=".services.FallDetectionService">
-            <!--android:icon="@drawable/icon"-->
-            <!--android:label="@string/service_name"-->
-
-        </service>
-        <service
             android:name=".services.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
@@ -82,13 +76,10 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".services.FallAlarmReceiver"
+            android:name=".services.ZoneAlarmReceiver"
             android:exported="false">
         </receiver>
-        <receiver
-            android:name=".services.FallAlarmReceiver"
-            android:exported="false">
-        </receiver>
+
 
     </application>
 

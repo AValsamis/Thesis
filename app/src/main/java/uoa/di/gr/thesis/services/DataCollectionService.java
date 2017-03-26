@@ -142,14 +142,9 @@ public class DataCollectionService extends Service implements SensorEventListene
                 mMagnetic=mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
                 mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
                 mSensorManager.registerListener(this, mMagnetic,  SensorManager.SENSOR_DELAY_NORMAL);
-                AlarmManager fallAlarm=(AlarmManager) this.getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-                Intent intent2 = new Intent(this.getApplicationContext(), FallAlarmReceiver.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 0, intent2, 0);
-                // every 9 minutes we search the last 10 minutes of accelerometer_stats to include
-                // falls that may occur between two batches of 10 minutes
-                fallAlarm.setRepeating(AlarmManager.RTC_WAKEUP,System.currentTimeMillis(),60000, pendingIntent);
 
-                // Second alarmManager for zone detection
+                // TODO this has to be somewhere else
+                // alarmManager for zone detection
                 AlarmManager zoneAlarm=(AlarmManager) this.getApplicationContext().getSystemService(Context.ALARM_SERVICE);
                 Intent intent3 = new Intent(this.getApplicationContext(), ZoneAlarmReceiver.class);
                 PendingIntent pendingIntent2 = PendingIntent.getBroadcast(this.getApplicationContext(), 0, intent3, 0);
@@ -283,10 +278,6 @@ public class DataCollectionService extends Service implements SensorEventListene
                 }
             }
         }.start();
-        AlarmManager alarmManager=(AlarmManager) this.getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this.getApplicationContext(), FallAlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), 0, intent, 0);
-        alarmManager.cancel(pendingIntent);
 
     }
 
