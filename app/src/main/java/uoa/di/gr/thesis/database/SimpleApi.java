@@ -26,7 +26,7 @@ import uoa.di.gr.thesis.entities.Zone;
 
 public interface SimpleApi
 {
-    String BASE_URL = "http://192.168.1.6:8080/";
+    String BASE_URL = "http://192.168.1.72:8080/";
 
 
     @POST(Constants.URL_USERS)
@@ -44,6 +44,7 @@ public interface SimpleApi
     @POST(Constants.URL_REGISTERZONE)
     void registerZone(@Part("wifi") List<Wifi> wifis, @Part("zone")Zone zone, Callback<SimpleResponse> cb);
 
+    @Multipart
     @POST(Constants.URL_FIND_ZONE)
     SimpleResponse getZone(@Part("wifi") List<Wifi> signalStrengths, @Part("user")User user);
 

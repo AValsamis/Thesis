@@ -125,7 +125,7 @@ public class DataCollectionService extends Service implements SensorEventListene
                 }
             }.start();
         }
-        return Service.START_NOT_STICKY;
+        return Service.START_STICKY;
     }
 
     @Override
@@ -144,6 +144,7 @@ public class DataCollectionService extends Service implements SensorEventListene
                 mSensorManager.registerListener(this, mMagnetic,  SensorManager.SENSOR_DELAY_NORMAL);
 
                 // TODO this has to be somewhere else
+                // TODO find why this is called after 10 sec instead of 1 min
                 // alarmManager for zone detection
                 AlarmManager zoneAlarm=(AlarmManager) this.getApplicationContext().getSystemService(Context.ALARM_SERVICE);
                 Intent intent3 = new Intent(this.getApplicationContext(), ZoneAlarmReceiver.class);
@@ -248,6 +249,11 @@ public class DataCollectionService extends Service implements SensorEventListene
     {
         mSensorManager.unregisterListener(this);
         isRunning = false;
+        Intent intent = new Intent(this, ZoneAlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+
         new Thread()
         {
             public void run() {
