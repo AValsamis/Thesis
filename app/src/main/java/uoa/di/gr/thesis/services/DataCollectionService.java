@@ -165,7 +165,7 @@ public class DataCollectionService extends Service implements SensorEventListene
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
-        Log.i(o, "Service sensor changed");
+//        Log.i(o, "Service sensor changed");
 
         if(accelerometerStatsArrayList.size() > 5)
         {
@@ -188,7 +188,7 @@ public class DataCollectionService extends Service implements SensorEventListene
             };
             RestApiDispenser.getSimpleApiInstance().sendDataPacket(dataPacket,callback);
 
-            Log.i("DATAPACKET: " ,dataPacket.toString());
+//            Log.i("DATAPACKET: " ,dataPacket.toString());
             dataPacket = new DataPacket();
             accelerometerStatsArrayList = new ArrayList<>();
             orientationStatsArrayList = new ArrayList<>();
@@ -198,7 +198,6 @@ public class DataCollectionService extends Service implements SensorEventListene
             long curTime=System.currentTimeMillis();
 //            if(curTime-time > ACCELEROMETER_INTERVAL)
 //            {
-            Log.i("TIMES ARE: ",curTime+"  "+time);
             try {
                 float x = event.values[0];
                 float y = event.values[1];
@@ -207,7 +206,7 @@ public class DataCollectionService extends Service implements SensorEventListene
 
                 AccelerometerStats accelerometerStats = new AccelerometerStats(Float.toString(x),Float.toString(y),Float.toString(z),new Timestamp(curTime).toString());
                 accelerometerStatsArrayList.add(accelerometerStats);
-                Log.i("Accelerometer stats: " ,accelerometerStats.toString());
+//                Log.i("Accelerometer stats: " ,accelerometerStats.toString());
                 mLastAccelerometerSet = true;
                 time=curTime;
             } catch (IllegalArgumentException ex) {
@@ -231,7 +230,7 @@ public class DataCollectionService extends Service implements SensorEventListene
             SensorManager.getOrientation(mR, mOrientation);
             OrientationStats orientationStats = new OrientationStats(Float.toString(mOrientation[0]), Float.toString(mOrientation[1]), Float.toString(mOrientation[2]),new Timestamp(System.currentTimeMillis()).toString());
             orientationStatsArrayList.add(orientationStats);
-            Log.i("Orientation stats: " ,orientationStats.toString());
+//            Log.i("Orientation stats: " ,orientationStats.toString());
             mLastMagnetometerSet = false;
             mLastAccelerometerSet = false;
         }
