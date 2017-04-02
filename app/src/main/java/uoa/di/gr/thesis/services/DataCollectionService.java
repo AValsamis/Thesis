@@ -3,8 +3,10 @@ package uoa.di.gr.thesis.services;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -14,6 +16,7 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -70,15 +73,18 @@ public class DataCollectionService extends Service implements SensorEventListene
     private DataPacket dataPacket = new DataPacket();
     private ArrayList<AccelerometerStats> accelerometerStatsArrayList = new ArrayList<>();
     private ArrayList<OrientationStats> orientationStatsArrayList = new ArrayList<>();
-    Handler h = new Handler();
+    public Handler handler = null;
+    public static Runnable runnable = null;
     boolean isRunning = false;
-    boolean toFinishService = false;
+    boolean hasInstantiatedListeners = false;
     int delay = 10000; //milliseconds
     String o = Integer.toString(new Object().hashCode());
     /**
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
      */
+    public static String ACTION="My broadcast receiver";
+
     public class LocalBinder extends Binder {
         public DataCollectionService getService() {
             // Return this instance of LocalService so clients can call public methods
@@ -93,37 +99,36 @@ public class DataCollectionService extends Service implements SensorEventListene
 
         if (!isRunning) {
             isRunning = true;
-
-            Calendar cal = Calendar.getInstance();
-            new Thread()
-            {
+            handler = new Handler();
+            runnable = new Runnable() {
                 public void run() {
-                    while (true){
-                        final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
-                            @Override
-                            protected void onSuccess(SimpleResponse response, Response response2) {
-                                if (response.getOk()) {
+                    final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
+                        @Override
+                        protected void onSuccess(SimpleResponse response, Response response2) {
+                            if (response.getOk()) {
+                                if (!hasInstantiatedListeners)
+                                {
+                                    hasInstantiatedListeners =true;
                                     collectData();
-                                    toFinishService = false;
                                 }
-                                else{
-                                    toFinishService = true;
-                                    stopSelf();
+                            } else {
+                                if (hasInstantiatedListeners) {
+                                    unregisterListeners();
+                                    hasInstantiatedListeners =false;
                                 }
                             }
-                            @Override
-                            protected void onFailure(RetrofitError error) {
-                            }
-                        };
-                        RestApiDispenser.getSimpleApiInstance().getShouldRunService(user.getUsername(), callback);
-                        try {
-                            Thread.sleep(10000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
                         }
-                    }
+
+                        @Override
+                        protected void onFailure(RetrofitError error) {
+                        }
+                    };
+                    RestApiDispenser.getSimpleApiInstance().getShouldRunService(user.getUsername(), callback);
+
+                    handler.postDelayed(runnable, 10000);
                 }
-            }.start();
+            };
+            handler.postDelayed(runnable, 15000);
         }
         return Service.START_STICKY;
     }
@@ -143,13 +148,12 @@ public class DataCollectionService extends Service implements SensorEventListene
                 mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
                 mSensorManager.registerListener(this, mMagnetic,  SensorManager.SENSOR_DELAY_NORMAL);
 
-                // TODO this has to be somewhere else
-                // TODO find why this is called after 10 sec instead of 1 min
                 // alarmManager for zone detection
                 AlarmManager zoneAlarm=(AlarmManager) this.getApplicationContext().getSystemService(Context.ALARM_SERVICE);
                 Intent intent3 = new Intent(this.getApplicationContext(), ZoneAlarmReceiver.class);
                 PendingIntent pendingIntent2 = PendingIntent.getBroadcast(this.getApplicationContext(), 0, intent3, 0);
                 zoneAlarm.setRepeating(AlarmManager.RTC_WAKEUP,System.currentTimeMillis(),60000, pendingIntent2);
+
 
         } catch (IllegalArgumentException ex) {
             Logger.getLogger(DataCollectionActivity.class.getName()).log(Level.SEVERE, null, ex);
@@ -158,38 +162,27 @@ public class DataCollectionService extends Service implements SensorEventListene
         }
     }
 
-
     @Override
     public void onSensorChanged(SensorEvent event) {
         Sensor sensor = event.sensor;
         Log.i(o, "Service sensor changed");
-
-        if (toFinishService) unregisterListeners();
 
         if(accelerometerStatsArrayList.size() > 5)
         {
             dataPacket.setUser(user);
             dataPacket.setAccelerometerStats(accelerometerStatsArrayList);
             dataPacket.setOrientationStats(orientationStatsArrayList);
-            final CallbacksManager.CancelableCallback callback = callbacksManager.new CancelableCallback() {
-
-                @Override
-                protected void onSuccess(Object o, Response response) {
-
-                }
-
+            final CallbacksManager.CancelableCallback callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
                 @Override
                 protected void onSuccess(SimpleResponse response, Response response2) {
                     if (response.getOk()){}
 //                        Toast.makeText(getApplicationContext(), "Success! " + response.getResponse(), Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(getApplicationContext(), response.getResponse(), Toast.LENGTH_SHORT).show();
-
                 }
 
                 @Override
                 protected void onFailure(RetrofitError error) {
-
                     Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
                 }
             };
@@ -253,38 +246,6 @@ public class DataCollectionService extends Service implements SensorEventListene
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
-
-        new Thread()
-        {
-            public void run() {
-                while (true){
-                    final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
-                        @Override
-                        protected void onSuccess(SimpleResponse response, Response response2) {
-                            if (response.getOk()) {
-                                toFinishService = false;
-                                collectData();
-                                stopSelf();
-                            }
-                            else{
-                                toFinishService = true;
-//                                stopSelf();
-                            }
-                        }
-                        @Override
-                        protected void onFailure(RetrofitError error) {
-                        }
-                    };
-                    RestApiDispenser.getSimpleApiInstance().getShouldRunService(user.getUsername(), callback);
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }.start();
-
     }
 
     @Override
