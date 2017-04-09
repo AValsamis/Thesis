@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="uoa.di.gr.thesis">
 
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -49,6 +50,13 @@
             <!--android:label="@string/service_name"-->
 
         </service>
+        <service
+            android:name=".services.RecognitionService">
+            <!--android:icon="@drawable/icon"-->
+            <!--android:label="@string/service_name"-->
+        </service>
+        <service android:name=".services.DetectedActivitiesIntentService"/>
+
         <service
             android:name=".services.MyFirebaseInstanceIDService">
             <intent-filter>
