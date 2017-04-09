@@ -45,7 +45,8 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <service
-            android:name=".services.DataCollectionService">
+            android:name=".services.DataCollectionService"
+            android:enabled="true">
             <!--android:icon="@drawable/icon"-->
             <!--android:label="@string/service_name"-->
 
@@ -70,7 +71,8 @@
             </intent-filter>
         </service>
         <service
-            android:name=".services.ZoneDetetectionService">
+            android:name=".services.ZoneDetetectionService"
+            android:enabled="true">
             <!--android:icon="@drawable/icon"-->
             <!--android:label="@string/service_name"-->
 

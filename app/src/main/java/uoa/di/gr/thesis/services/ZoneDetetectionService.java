@@ -46,6 +46,7 @@ public class ZoneDetetectionService  extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i("ZoneDetetectionService", "Started zone Detection service");
         String connectivity_context = WIFI_SERVICE;
         final WifiManager wifiManager = (WifiManager) this.getApplicationContext().getSystemService(connectivity_context);
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
@@ -88,7 +89,8 @@ public class ZoneDetetectionService  extends Service {
                 User user = new User();
                 user.setUsername(prefs.getString("username","nobody"));
                 SimpleResponse zone = RestApiDispenser.getSimpleApiInstance().getZone(wifis, user);
-                Log.i("ZONE IS: ", zone.toString());
+                if(zone!=null)
+                    Log.i("ZONE IS: ", zone.toString());
             }
 
         }.start();
