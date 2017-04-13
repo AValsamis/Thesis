@@ -14,16 +14,13 @@ public class DataPacket {
     @Expose
     private ArrayList<AccelerometerStats> accelerometerStats;
     @Expose
-    private ArrayList<OrientationStats> orientationStats;
-    @Expose
     private User user;
 
     public DataPacket() {
     }
 
-    public DataPacket(ArrayList<AccelerometerStats> accelerometerStats, ArrayList<OrientationStats> orientationStats, User user) {
+    public DataPacket(ArrayList<AccelerometerStats> accelerometerStats, User user) {
         this.accelerometerStats = accelerometerStats;
-        this.orientationStats = orientationStats;
         this.user = user;
     }
 
@@ -31,7 +28,6 @@ public class DataPacket {
     public String toString() {
         return "DataPacket{" +
                 "accelerometerStats=" + accelerometerStats +
-                ", orientationStats=" + orientationStats +
                 ", user=" + user.toString() +
                 '}';
     }
@@ -42,14 +38,6 @@ public class DataPacket {
 
     public void setAccelerometerStats(ArrayList<AccelerometerStats> accelerometerStats) {
         this.accelerometerStats = accelerometerStats;
-    }
-
-    public ArrayList<OrientationStats> getOrientationStats() {
-        return orientationStats;
-    }
-
-    public void setOrientationStats(ArrayList<OrientationStats> orientationStats) {
-        this.orientationStats = orientationStats;
     }
 
     public User getUser() {

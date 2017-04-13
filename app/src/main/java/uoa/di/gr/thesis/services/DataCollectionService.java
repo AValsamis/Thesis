@@ -40,7 +40,6 @@ import uoa.di.gr.thesis.activities.MainActivity;
 import uoa.di.gr.thesis.database.RestApiDispenser;
 import uoa.di.gr.thesis.entities.AccelerometerStats;
 import uoa.di.gr.thesis.entities.DataPacket;
-import uoa.di.gr.thesis.entities.OrientationStats;
 import uoa.di.gr.thesis.entities.SimpleResponse;
 import uoa.di.gr.thesis.entities.User;
 import uoa.di.gr.thesis.utils.CallbacksManager;
@@ -58,27 +57,16 @@ public class DataCollectionService extends Service implements SensorEventListene
 
     private SensorManager mSensorManager;
     private Sensor mAccelerometer, mMagnetic;
-    public SensorEventListener mSensorListener ;
-    private FileOutputStream fOut = null;
-    private PendingIntent pintent;
-    private File myFile;
-    private long time;
     private User user = new User();
     private boolean mLastAccelerometerSet = false;
-    private boolean mLastMagnetometerSet = false;
     private float[] mLastAccelerometer = new float[3];
-    private float[] mLastMagnetometer = new float[3];
-    private float[] mR = new float[9];
-    private float[] mOrientation = new float[3];
     private DataPacket dataPacket = new DataPacket();
     private ArrayList<AccelerometerStats> accelerometerStatsArrayList = new ArrayList<>();
-    private ArrayList<OrientationStats> orientationStatsArrayList = new ArrayList<>();
     public Handler handler = null;
     public static Runnable runnable = null;
     boolean isRunning = false;
     boolean hasInstantiatedListeners = false;
-    int delay = 10000; //milliseconds
-    String o = Integer.toString(new Object().hashCode());
+    private int delay = 10000;
     /**
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
@@ -125,7 +113,7 @@ public class DataCollectionService extends Service implements SensorEventListene
                     };
                     RestApiDispenser.getSimpleApiInstance().getShouldRunService(user.getUsername(), callback);
 
-                    handler.postDelayed(runnable, 10000);
+//                    handler.postDelayed(runnable, delay);
                 }
             };
             handler.postDelayed(runnable, 15000);
@@ -171,7 +159,6 @@ public class DataCollectionService extends Service implements SensorEventListene
         {
             dataPacket.setUser(user);
             dataPacket.setAccelerometerStats(accelerometerStatsArrayList);
-            dataPacket.setOrientationStats(orientationStatsArrayList);
             final CallbacksManager.CancelableCallback callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
                 @Override
                 protected void onSuccess(SimpleResponse response, Response response2) {
@@ -191,13 +178,10 @@ public class DataCollectionService extends Service implements SensorEventListene
 //            Log.i("DATAPACKET: " ,dataPacket.toString());
             dataPacket = new DataPacket();
             accelerometerStatsArrayList = new ArrayList<>();
-            orientationStatsArrayList = new ArrayList<>();
         }
         if (sensor.getType() == Sensor.TYPE_ACCELEROMETER)
         {
             long curTime=System.currentTimeMillis();
-//            if(curTime-time > ACCELEROMETER_INTERVAL)
-//            {
             try {
                 float x = event.values[0];
                 float y = event.values[1];
@@ -208,33 +192,12 @@ public class DataCollectionService extends Service implements SensorEventListene
                 accelerometerStatsArrayList.add(accelerometerStats);
 //                Log.i("Accelerometer stats: " ,accelerometerStats.toString());
                 mLastAccelerometerSet = true;
-                time=curTime;
             } catch (IllegalArgumentException ex) {
                 Logger.getLogger(DataCollectionActivity.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IllegalStateException ex) {
                 Logger.getLogger(DataCollectionActivity.class.getName()).log(Level.SEVERE, null, ex);
             }
-//            }
         }
-        else if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-            long curTime=System.currentTimeMillis();
-
-            if(curTime-time > ORIENTATION_INTERVAL) {
-                System.arraycopy(event.values, 0, mLastMagnetometer, 0, event.values.length);
-                mLastMagnetometerSet = true;
-                time=curTime;
-            }
-        }
-        if (mLastAccelerometerSet && mLastMagnetometerSet) {
-            SensorManager.getRotationMatrix(mR, null, mLastAccelerometer, mLastMagnetometer);
-            SensorManager.getOrientation(mR, mOrientation);
-            OrientationStats orientationStats = new OrientationStats(Float.toString(mOrientation[0]), Float.toString(mOrientation[1]), Float.toString(mOrientation[2]),new Timestamp(System.currentTimeMillis()).toString());
-            orientationStatsArrayList.add(orientationStats);
-//            Log.i("Orientation stats: " ,orientationStats.toString());
-            mLastMagnetometerSet = false;
-            mLastAccelerometerSet = false;
-        }
-
     }
 
     public void unregisterListeners()

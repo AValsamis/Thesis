@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 
-
 android {
     compileSdkVersion 25
     buildToolsVersion "23.0.3"
@@ -37,7 +36,6 @@ dependencies {
         transitive = true
     }
     compile 'com.google.android.gms:play-services-location:10.2.1'
-
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
 
     apply plugin: 'com.google.gms.google-services'
