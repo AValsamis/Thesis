@@ -48,82 +48,78 @@ public class RecognitionService extends Service implements GoogleApiClient.Conne
     }
 
 
-        private static final String TAG = RecognitionService.class.getSimpleName();
-        public final static int DETECTION_INTERVAL_IN_MILLISECONDS = 0;
-        private GoogleApiClient googleApiClient;
+    private static final String TAG = RecognitionService.class.getSimpleName();
+    public final static int DETECTION_INTERVAL_IN_MILLISECONDS = 0;
+    private GoogleApiClient googleApiClient;
 
-        public RecognitionService() {
-            super();
+    public RecognitionService() {
+        super();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        initLocationClient();
+        return START_STICKY;
+    }
+
+    private void initLocationClient() {
+        if (googleApiClient == null) {
+            googleApiClient = new GoogleApiClient
+                    .Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(ActivityRecognition.API)
+                    .build();
         }
 
-        @Override
-        public int onStartCommand(Intent intent, int flags, int startId) {
-            initLocationClient();
-            return START_STICKY;
-        }
-
-
-
-        private void initLocationClient() {
-            if (googleApiClient == null) {
-                googleApiClient = new GoogleApiClient
-                        .Builder(this)
-                        .addConnectionCallbacks(this)
-                        .addOnConnectionFailedListener(this)
-                        .addApi(ActivityRecognition.API)
-                        .build();
-            }
-
-            if (!googleApiClient.isConnected() || !googleApiClient.isConnecting()) {
-                googleApiClient.connect();
-            }
-        }
-
-        @Override
-        public void onConnected(Bundle bundle) {
-            Log.i(TAG, "Connected to GoogleApiClient");
-            if (googleApiClient != null && googleApiClient.isConnected()) {
-                ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
-                        googleApiClient,
-                        DETECTION_INTERVAL_IN_MILLISECONDS,
-                        getActivityDetectionPendingIntent()
-                ).setResultCallback(this);
-            }
-        }
-
-        @Override
-        public void onConnectionSuspended(int i) {
-            Log.i(TAG, "Connection suspended");
+        if (!googleApiClient.isConnected() || !googleApiClient.isConnecting()) {
             googleApiClient.connect();
         }
+    }
 
-        @Override
-        public void onConnectionFailed(ConnectionResult connectionResult) {
-            Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
-        }
-
-        private PendingIntent getActivityDetectionPendingIntent() {
-            Intent intent = new Intent(this, DetectedActivitiesIntentService.class);
-
-            // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
-            // requestActivityUpdates() and removeActivityUpdates().
-            return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        }
-
-        @Override
-        public void onResult(Status status) {
-            Log.i(TAG, "onResult = " + status.getStatusMessage());
-        }
-
-        @Override
-        public void onDestroy() {
-            super.onDestroy();
-            Log.i(TAG, "onDestroy");
-            ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.i(TAG, "Connected to GoogleApiClient");
+        if (googleApiClient != null && googleApiClient.isConnected()) {
+            ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
                     googleApiClient,
+                    DETECTION_INTERVAL_IN_MILLISECONDS,
                     getActivityDetectionPendingIntent()
             ).setResultCallback(this);
         }
     }
 
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.i(TAG, "Connection suspended");
+        googleApiClient.connect();
+    }
 
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
+    }
+
+    private PendingIntent getActivityDetectionPendingIntent() {
+        Intent intent = new Intent(this, DetectedActivitiesIntentService.class);
+
+        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
+        // requestActivityUpdates() and removeActivityUpdates().
+        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    @Override
+    public void onResult(Status status) {
+        Log.i(TAG, "onResult = " + status.getStatusMessage());
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "onDestroy");
+        ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(
+                googleApiClient,
+                getActivityDetectionPendingIntent()
+        ).setResultCallback(this);
+    }
+}

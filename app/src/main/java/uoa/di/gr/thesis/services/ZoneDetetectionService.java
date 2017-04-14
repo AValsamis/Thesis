@@ -96,6 +96,4 @@ public class ZoneDetetectionService  extends Service {
         }.start();
         return Service.START_STICKY;
     }
-
-
 }

@@ -16,18 +16,25 @@ package uoa.di.gr.thesis.services;
  */
 
 import android.app.IntentService;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
-        import android.app.IntentService;
-        import android.content.Intent;
-        import android.support.v4.content.LocalBroadcastManager;
-        import android.util.Log;
+import com.google.android.gms.location.ActivityRecognitionResult;
+import com.google.android.gms.location.DetectedActivity;
 
-        import com.google.android.gms.location.ActivityRecognitionResult;
-        import com.google.android.gms.location.DetectedActivity;
+import java.util.ArrayList;
+import java.util.Date;
 
-        import java.util.ArrayList;
-
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import uoa.di.gr.thesis.database.RestApiDispenser;
 import uoa.di.gr.thesis.entities.Constants;
+import uoa.di.gr.thesis.entities.RecognizedActivity;
+import uoa.di.gr.thesis.entities.SimpleResponse;
+import uoa.di.gr.thesis.entities.User;
+import uoa.di.gr.thesis.utils.CallbacksManager;
 
 /**
  *  IntentService for handling incoming intents that are generated as a result of requesting
@@ -37,6 +44,7 @@ import uoa.di.gr.thesis.entities.Constants;
 public class DetectedActivitiesIntentService extends IntentService {
 
     protected static final String TAG = "DetectedActivitiesIS";
+    protected final CallbacksManager callbacksManager = new CallbacksManager();
 
     /**
      * This constructor is required, and calls the super IntentService(String)
@@ -66,7 +74,6 @@ public class DetectedActivitiesIntentService extends IntentService {
         // device. Each activity is associated with a confidence level, which is an int between
         // 0 and 100.
         ArrayList<DetectedActivity> detectedActivities = (ArrayList) result.getProbableActivities();
-
         // Log each activity.
         Log.i(TAG, "activities detected");
         for (DetectedActivity da: detectedActivities) {
@@ -76,8 +83,44 @@ public class DetectedActivitiesIntentService extends IntentService {
             );
         }
 
+        //Send activity information to Server
+        DetectedActivity da = result.getMostProbableActivity();
+
+        if (da.getConfidence()>75) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            if (preferences.getBoolean("log", false)) {
+                String username = preferences.getString("username", "nobody");
+                User user = new User();
+                user.setUsername(username);
+                RecognizedActivity recognizedActivity = new RecognizedActivity();
+                recognizedActivity.setUser(user);
+                recognizedActivity.setCertainty(da.getConfidence());
+                recognizedActivity.setState(
+                        Constants.getActivityString(
+                                getApplicationContext(),
+                                da.getType()));
+                recognizedActivity.setTimestamp(new Date(result.getTime()));
+
+                final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
+                    @Override
+                    protected void onSuccess(SimpleResponse response, Response response2) {
+                        if (response.getOk()) {
+                            Log.d(TAG,"Activity succesfully saved in server");
+                        } else {
+                            }
+                        }
+
+                    @Override
+                    protected void onFailure(RetrofitError error) {
+
+                    }
+            };
+                RestApiDispenser.getSimpleApiInstance().sendActivity(recognizedActivity, callback);
+            }
+        }
+
         // Broadcast the list of detected activities.
-        localIntent.putExtra(Constants.ACTIVITY_EXTRA, detectedActivities);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
+        //localIntent.putExtra(Constants.ACTIVITY_EXTRA, detectedActivities);
+        //LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
     }
 }

@@ -5,9 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * Created by georgi on 06/06/16.
- */
 public class ActivityRecPoint implements Serializable {
     private String activityType;
     private Long time;

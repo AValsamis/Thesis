@@ -16,4 +16,5 @@ class Constants {
     static final String URL_SHOULD_RUN="/shouldRun/{username}";
     static final String URL_START_SCAN="/startDataCollection";
     static final String URL_STOP_SCAN="/stopDataCollection";
+    static final String URL_ACTIVITY="/activity";
 }

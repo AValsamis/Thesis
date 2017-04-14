@@ -4,6 +4,7 @@ package uoa.di.gr.thesis.database;
  * Created by Sevle on 2/16/2015.
  */
 
+import android.provider.ContactsContract;
 import android.telecom.Call;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import retrofit.http.Part;
 import retrofit.http.Path;
 import uoa.di.gr.thesis.entities.AccelerometerStats;
 import uoa.di.gr.thesis.entities.DataPacket;
+import uoa.di.gr.thesis.entities.RecognizedActivity;
 import uoa.di.gr.thesis.entities.SimpleResponse;
 import uoa.di.gr.thesis.entities.User;
 import uoa.di.gr.thesis.entities.Wifi;
@@ -72,7 +74,8 @@ public interface SimpleApi
     @POST(Constants.URL_STOP_SCAN)
     void stopScanService(@Body User user, Callback<SimpleResponse> cb);
 
-
+    @POST(Constants.URL_ACTIVITY)
+    void sendActivity(@Body RecognizedActivity recognizedActivity, Callback<SimpleResponse> cb);
 
     /*(@GET(Constants.URL_EVENTS)
     void getEvents(Callback<List<Event>> dataCallback);
