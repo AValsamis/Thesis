@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -19,10 +18,6 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognition;
 
-import java.util.List;
-
-import uoa.di.gr.thesis.entities.ActivityRecPoint;
-
 /**
  * Created by koemdzhiev on 05/06/16.
  */
@@ -30,8 +25,6 @@ public class RecognitionService extends Service implements GoogleApiClient.Conne
         GoogleApiClient.OnConnectionFailedListener,
         ResultCallback<Status> {
 
-    private LocalBroadcastManager mLocalBroadcastManager;
-    private List<ActivityRecPoint> activityRecPoints;
     private final IBinder mBinder = new LocalBinder();
 
     public class LocalBinder extends Binder {

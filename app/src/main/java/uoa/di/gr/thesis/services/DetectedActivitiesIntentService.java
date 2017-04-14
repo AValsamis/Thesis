@@ -99,6 +99,8 @@ public class DetectedActivitiesIntentService extends IntentService {
                         Constants.getActivityString(
                                 getApplicationContext(),
                                 da.getType()));
+                Date date = new Date(result.getTime());
+                Log.i("DATE",date.toString());
                 recognizedActivity.setTimestamp(new Date(result.getTime()));
 
                 final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
