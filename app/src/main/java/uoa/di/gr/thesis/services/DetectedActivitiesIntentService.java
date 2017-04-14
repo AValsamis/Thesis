@@ -24,8 +24,11 @@ import android.util.Log;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -99,9 +102,15 @@ public class DetectedActivitiesIntentService extends IntentService {
                         Constants.getActivityString(
                                 getApplicationContext(),
                                 da.getType()));
-                Date date = new Date(result.getTime());
-                Log.i("DATE",date.toString());
-                recognizedActivity.setTimestamp(new Date(result.getTime()));
+                Date date2 = new Date(result.getTime());
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault());
+                Date date = null;
+                try {
+                    date = df.parse(date2.toString());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                recognizedActivity.setTimestamp(date);
 
                 final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
                     @Override
