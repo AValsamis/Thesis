@@ -36,7 +36,6 @@ public class RecognitionService extends Service implements GoogleApiClient.Conne
 
     @Override
     public IBinder onBind(Intent intent) {
-        //TODO for communication return IBinder implementation
         return mBinder;
     }
 

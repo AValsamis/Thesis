@@ -279,62 +279,6 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks, Ma
             }
         });
 
-
-//        FloatingActionButton findZone = (FloatingActionButton) getActivity().findViewById(R.id.findZone);
-//        findZone.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View view) {
-//                Toast.makeText(getActivity(), "Calculating zone...", Toast.LENGTH_LONG);
-//                // TODO use asynctask here
-//                List<Wifi> wifis = new ArrayList<Wifi>();
-//                List <String> wifiNames = new ArrayList();
-//                for(int i = 0 ; i < SCAN_TIMES; i++) {
-//                    try {
-//                        Thread.sleep(2000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    String connectivity_context = WIFI_SERVICE;
-//
-//                    final WifiManager wifiManager = (WifiManager) getActivity().getSystemService(connectivity_context);
-//
-//                    wifiManager.startScan();
-//                    List<ScanResult> s;
-//
-//                    s = wifiManager.getScanResults();
-//
-//                    for (ScanResult scanResult : s) {
-//                        if (!wifiNames.contains(scanResult.SSID)) {
-//                            wifiNames.add(scanResult.SSID);
-//                            ArrayList<Double> signalStrengths = new ArrayList();
-//                            signalStrengths.add((double)scanResult.level);
-//                            Wifi wifi = new Wifi();
-//                            wifi.setMacAddress(scanResult.BSSID);
-//                            wifi.setName(scanResult.SSID);
-//                            wifi.setSignalStrength(signalStrengths);
-//                            wifis.add(wifi);
-//                        } else {
-//                            for (Wifi wifi : wifis) {
-//                                if (wifi.getName().equals(scanResult.SSID)) {
-//                                    wifi.getSignalStrength().add((double)scanResult.level);
-//                                }
-//                            }
-//                        }
-//                    }
-//                    Log.i("DEBUG", Arrays.asList(wifis).toString());
-//                }
-//                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-//                String username = prefs.getString("username", "nobody");
-//                User user = new User();
-//                user.setUsername(username);
-//                SimpleResponse zone = RestApiDispenser.getSimpleApiInstance().getZone(wifis, user);
-//                if(zone!=null)
-//                    Toast.makeText(getActivity(), "Elderly is in zone with name: " + zone.getResponse(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-
         collection = (AppCompatButton) getActivity().findViewById(R.id.collection);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String username = prefs.getString("username", "nobody");

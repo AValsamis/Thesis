@@ -123,7 +123,6 @@ public class DataCollectionService extends Service implements SensorEventListene
 
     @Override
     public IBinder onBind(Intent intent) {
-        //TODO for communication return IBinder implementation
         return mBinder;
     }
 
@@ -192,9 +191,8 @@ public class DataCollectionService extends Service implements SensorEventListene
                 accelerometerStatsArrayList.add(accelerometerStats);
 //                Log.i("Accelerometer stats: " ,accelerometerStats.toString());
                 mLastAccelerometerSet = true;
-            } catch (IllegalArgumentException ex) {
-                Logger.getLogger(DataCollectionActivity.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalStateException ex) {
+            } catch (IllegalArgumentException | IllegalStateException ex) {
+                ex.printStackTrace();
                 Logger.getLogger(DataCollectionActivity.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

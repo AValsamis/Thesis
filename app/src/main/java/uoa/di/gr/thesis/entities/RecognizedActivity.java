@@ -21,7 +21,7 @@ public class RecognizedActivity implements Serializable {
     @Expose
     private User user;
     @Expose
-    private Date timestamp;
+    private String timestamp;
     @Expose
     private String state = "";
     @Expose
@@ -35,11 +35,11 @@ public class RecognizedActivity implements Serializable {
         this.user = user;
     }
 
-    public Date getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Date timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 

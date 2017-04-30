@@ -27,6 +27,7 @@ import com.google.android.gms.location.DetectedActivity;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -102,15 +103,9 @@ public class DetectedActivitiesIntentService extends IntentService {
                         Constants.getActivityString(
                                 getApplicationContext(),
                                 da.getType()));
-                Date date2 = new Date(result.getTime());
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault());
-                Date date = null;
-                try {
-                    date = df.parse(date2.toString());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                recognizedActivity.setTimestamp(date);
+                Date date = new Date(result.getTime());
+                SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                recognizedActivity.setTimestamp(format1.format(date));
 
                 final CallbacksManager.CancelableCallback<SimpleResponse> callback = callbacksManager.new CancelableCallback<SimpleResponse>() {
                     @Override
