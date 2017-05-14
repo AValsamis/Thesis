@@ -1,7 +1,6 @@
 package uoa.di.gr.thesis.database;
 
 class Constants {
-    static final String URL_USERS="/test";
     static final String URL_REGISTER="/register";
     static final String URL_LOGIN="/login";
     static final String URL_REGISTERZONE="/registerZone";

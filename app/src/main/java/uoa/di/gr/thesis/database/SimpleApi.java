@@ -26,11 +26,6 @@ public interface SimpleApi
 {
     String BASE_URL = "http://192.168.1.5:8080/";
 
-
-    @POST(Constants.URL_USERS)
-    //void testApi(@Body String string, Callback<String> cb);
-    void testApi(@Body AccelerometerStats accelerometerStats, Callback<String> cb);
-
     @POST(Constants.URL_REGISTER)
     void registerUser(@Body User user, Callback<SimpleResponse> cb);
 
@@ -55,9 +50,6 @@ public interface SimpleApi
     @POST(Constants.URL_SEND_DATA_PACKET)
     void sendDataPacket(@Body DataPacket dataPacket, Callback<SimpleResponse> cb);
 
-//    @GET(Constants.URL_FALL_DETECTION)
-//    void fallDetection(@Path("username") String username, Callback<SimpleResponse> cb);
-
     @GET(Constants.URL_IS_ELDERLY)
     boolean isElderly(@Path("username") String username);
 
@@ -72,11 +64,5 @@ public interface SimpleApi
 
     @POST(Constants.URL_ACTIVITY)
     void sendActivity(@Body RecognizedActivity recognizedActivity, Callback<SimpleResponse> cb);
-
-    /*(@GET(Constants.URL_EVENTS)
-    void getEvents(Callback<List<Event>> dataCallback);
-
-    @POST(Constants.POST_EVENT)
-    void createEvent(@Body EventPost event, Callback<Event> cb);*/
 
 }

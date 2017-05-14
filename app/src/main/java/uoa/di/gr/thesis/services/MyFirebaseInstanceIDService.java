@@ -15,7 +15,7 @@ package uoa.di.gr.thesis.services;
  * limitations under the License.
  */
 
-    import android.content.SharedPreferences;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 

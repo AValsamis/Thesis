@@ -46,15 +46,12 @@ import uoa.di.gr.thesis.utils.CallbacksManager;
 
 public class DataCollectionService extends Service implements SensorEventListener {
 
-    private static final int ACCELEROMETER_INTERVAL = 350;
-    private static final int ORIENTATION_INTERVAL = 200;
     protected final CallbacksManager callbacksManager = new CallbacksManager();
     private final IBinder mBinder = new LocalBinder();
 
     private SensorManager mSensorManager;
     private Sensor mAccelerometer, mMagnetic;
     private User user = new User();
-    private boolean mLastAccelerometerSet = false;
     private float[] mLastAccelerometer = new float[3];
     private DataPacket dataPacket = new DataPacket();
     private ArrayList<AccelerometerStats> accelerometerStatsArrayList = new ArrayList<>();
@@ -62,7 +59,6 @@ public class DataCollectionService extends Service implements SensorEventListene
     public static Runnable runnable = null;
     boolean isRunning = false;
     boolean hasInstantiatedListeners = false;
-    private int delay = 10000;
     /**
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
@@ -186,7 +182,6 @@ public class DataCollectionService extends Service implements SensorEventListene
                 AccelerometerStats accelerometerStats = new AccelerometerStats(Float.toString(x),Float.toString(y),Float.toString(z),new Timestamp(curTime).toString());
                 accelerometerStatsArrayList.add(accelerometerStats);
 //                Log.i("Accelerometer stats: " ,accelerometerStats.toString());
-                mLastAccelerometerSet = true;
             } catch (IllegalArgumentException | IllegalStateException ex) {
                 ex.printStackTrace();
                 Logger.getLogger(DataCollectionActivity.class.getName()).log(Level.SEVERE, null, ex);

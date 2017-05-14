@@ -54,10 +54,8 @@ public class MainFragment extends Fragment  implements RegisterZoneCallbacks, Ma
     private MainFragmentCallbacks mainFragmentCallback;
     protected final CallbacksManager callbacksManager = new CallbacksManager();
     AppCompatButton collection;
-    TextView test;
     boolean started=false;
     public String zoneName = "";
-    protected final int SCAN_TIMES=10;
     ProgressDialog progressDialog ;
 
     RegisterZone mWorkerThread;

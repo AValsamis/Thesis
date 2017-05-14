@@ -23,7 +23,6 @@ public class RegisterZone extends HandlerThread {
     private Boolean isSafe;
     WifiManager wifiManager;
     private static final String TAG = RegisterZone.class.getSimpleName();
-    //private Map<ImageView, String> mRequestMap = new HashMap<ImageView, String>();
     private RegisterZoneCallbacks mCallback;
 
 

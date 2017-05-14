@@ -30,7 +30,6 @@ import uoa.di.gr.thesis.utils.CallbacksManager;
 //http://www.androiddesignpatterns.com/2013/04/retaining-objects-across-config-changes.html
 public class LoginFragment extends Fragment implements LoginFragmentCallbacks {
     public static final String TAG = LoginFragment.class.getSimpleName();
-    private static final int REQUEST_SIGNUP = 0;
     private LoginFragmentCallbacks mCallback;
     protected final CallbacksManager callbacksManager = new CallbacksManager();
 
