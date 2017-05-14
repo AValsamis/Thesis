@@ -2,10 +2,6 @@ package uoa.di.gr.thesis.entities;
 
 import com.google.gson.annotations.Expose;
 
-/**
- * Created by Angelos on 6/19/2016.
- */
-
 public class AccelerometerStats {
 
     @Expose

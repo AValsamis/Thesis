@@ -24,10 +24,6 @@ import uoa.di.gr.thesis.entities.User;
 import uoa.di.gr.thesis.services.DataCollectionService;
 import uoa.di.gr.thesis.services.RecognitionService;
 
-/**
- * Created by skand on 11/20/2016.
- */
-
 public class DataCollectionActivity extends AppCompatActivity{
 
     private User user = new User();

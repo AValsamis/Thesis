@@ -48,10 +48,6 @@ import uoa.di.gr.thesis.utils.RegisterZone;
 
 import static android.content.Context.WIFI_SERVICE;
 
-/**
- * Created by Angelos on 11/21/2016.
- */
-
 public class MainFragment extends Fragment  implements RegisterZoneCallbacks, MainFragmentCallbacks {
     public static final String TAG = MainFragment.class.getSimpleName();
     private RegisterZoneCallbacks registerZoneCallback;

@@ -17,10 +17,6 @@ import android.widget.TextView;
 import uoa.di.gr.thesis.R;
 import uoa.di.gr.thesis.fragments.zones.ZoneFragment;
 
-/**
- * Created by Angelos on 11/21/2016.
- */
-
 public class ZoneActivity extends AppCompatActivity {
 
     @Override

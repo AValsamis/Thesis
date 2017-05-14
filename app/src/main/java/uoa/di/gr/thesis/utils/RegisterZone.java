@@ -15,10 +15,6 @@ import java.util.List;
 import uoa.di.gr.thesis.entities.Wifi;
 import uoa.di.gr.thesis.interfaces.RegisterZoneCallbacks;
 
-/**
- * Created by Angelos on 11/21/2016.
- */
-
 public class RegisterZone extends HandlerThread {
     protected final int SCAN_TIMES=10;
 

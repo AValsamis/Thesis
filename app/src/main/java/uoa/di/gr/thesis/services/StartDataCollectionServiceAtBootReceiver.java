@@ -8,10 +8,6 @@ import android.preference.PreferenceManager;
 
 import uoa.di.gr.thesis.activities.DataCollectionActivity;
 
-/**
- * Created by skand on 3/12/2017.
- */
-
 public class StartDataCollectionServiceAtBootReceiver extends BroadcastReceiver {
 
     @Override

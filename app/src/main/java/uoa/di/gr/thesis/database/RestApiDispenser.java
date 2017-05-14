@@ -9,9 +9,6 @@ import java.util.concurrent.TimeUnit;
 
 import retrofit.client.OkClient;
 
-/**
- * Created by Sevle on 2/25/2015.
- */
 public class RestApiDispenser {
 
     private static final String API_URL = SimpleApi.BASE_URL;

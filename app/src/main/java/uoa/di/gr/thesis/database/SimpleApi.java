@@ -1,9 +1,5 @@
 package uoa.di.gr.thesis.database;
 
-/**
- * Created by Sevle on 2/16/2015.
- */
-
 import android.provider.ContactsContract;
 import android.telecom.Call;
 
@@ -28,7 +24,7 @@ import uoa.di.gr.thesis.entities.Zone;
 
 public interface SimpleApi
 {
-    String BASE_URL = "http://192.168.1.9:8080/";
+    String BASE_URL = "http://192.168.1.5:8080/";
 
 
     @POST(Constants.URL_USERS)

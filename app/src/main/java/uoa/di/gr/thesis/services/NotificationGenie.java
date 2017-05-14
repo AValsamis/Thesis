@@ -15,9 +15,6 @@ import com.google.firebase.messaging.RemoteMessage;
 import uoa.di.gr.thesis.R;
 import uoa.di.gr.thesis.activities.MainActivity;
 
-/**
- * Created by Angelos on 3/24/2017.
- */
 public class NotificationGenie extends FirebaseMessagingService {
 
     private static final String TAG = "Firebase_MSG";

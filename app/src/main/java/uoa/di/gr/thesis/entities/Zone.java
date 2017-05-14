@@ -5,9 +5,6 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.Expose;
 
-/**
- * Created by Sevle on 9/23/2016.
- */
 public class Zone implements Comparable<Zone>{
 
     @Expose

@@ -44,10 +44,6 @@ import uoa.di.gr.thesis.entities.SimpleResponse;
 import uoa.di.gr.thesis.entities.User;
 import uoa.di.gr.thesis.utils.CallbacksManager;
 
-/**
- * Created by skand on 3/2/2017.
- */
-
 public class DataCollectionService extends Service implements SensorEventListener {
 
     private static final int ACCELEROMETER_INTERVAL = 350;

@@ -19,10 +19,6 @@ import uoa.di.gr.thesis.interfaces.LoginFragmentCallbacks;
 import uoa.di.gr.thesis.interfaces.SignupFragmentCallbacks;
 import uoa.di.gr.thesis.services.DataCollectionService;
 
-
-/**
- * Created by Sevle on 7/14/2015.
- */
 public class AuthenticationActivity  extends AppCompatActivity implements LoginFragmentCallbacks, SignupFragmentCallbacks {
     private static final String TAG="[AuthenticationActivity]";
     final FragmentManager fm = getSupportFragmentManager();

@@ -22,10 +22,6 @@ import uoa.di.gr.thesis.entities.SimpleResponse;
 import uoa.di.gr.thesis.entities.User;
 import uoa.di.gr.thesis.entities.Wifi;
 
-/**
- * Created by skand on 3/20/2017.
- */
-
 public class ZoneDetetectionService  extends Service {
 
     private final IBinder mBinder = new ZoneDetetectionService.LocalBinder();

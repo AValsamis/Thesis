@@ -4,9 +4,6 @@ import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
 
-/**
- * Created by Sevle on 9/23/2016.
- */
 public class Wifi {
 
     @Expose

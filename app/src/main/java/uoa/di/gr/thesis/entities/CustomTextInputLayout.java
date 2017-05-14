@@ -1,8 +1,5 @@
 package uoa.di.gr.thesis.entities;
 
-/**
- * Created by Sevle on 7/14/2015.
- */
 import android.content.Context;
 import android.graphics.Canvas;
 import android.support.design.widget.TextInputLayout;

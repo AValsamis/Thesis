@@ -2,9 +2,6 @@ package uoa.di.gr.thesis.entities;
 
 import com.google.gson.annotations.Expose;
 
-/**
- * Created by Sevle on 10/16/2016.
- */
 public class SimpleResponse {
 
     @Expose

@@ -1,9 +1,5 @@
 package uoa.di.gr.thesis.services;
 
-/**
- * Created by Angelos on 4/9/2017.
- */
-
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -18,9 +14,6 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognition;
 
-/**
- * Created by koemdzhiev on 05/06/16.
- */
 public class RecognitionService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         ResultCallback<Status> {

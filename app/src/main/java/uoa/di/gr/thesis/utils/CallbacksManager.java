@@ -9,9 +9,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import uoa.di.gr.thesis.entities.SimpleResponse;
 
-/**
- * Created by Sevle on 10/13/2015.
- */
 public class CallbacksManager {
     private final Set<CancelableCallback> callbacks = new HashSet<>();
 

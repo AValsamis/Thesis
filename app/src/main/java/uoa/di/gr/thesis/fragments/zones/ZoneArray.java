@@ -1,8 +1,5 @@
 package uoa.di.gr.thesis.fragments.zones;
 
-/**
- * Created by Angelos on 11/21/2016.
- */
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
