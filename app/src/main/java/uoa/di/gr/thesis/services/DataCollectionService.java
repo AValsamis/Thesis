@@ -3,10 +3,8 @@ package uoa.di.gr.thesis.services;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -16,27 +14,16 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.widget.AppCompatButton;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import uoa.di.gr.thesis.R;
 import uoa.di.gr.thesis.activities.DataCollectionActivity;
-import uoa.di.gr.thesis.activities.MainActivity;
 import uoa.di.gr.thesis.database.RestApiDispenser;
 import uoa.di.gr.thesis.entities.AccelerometerStats;
 import uoa.di.gr.thesis.entities.DataPacket;
@@ -50,7 +37,7 @@ public class DataCollectionService extends Service implements SensorEventListene
     private final IBinder mBinder = new LocalBinder();
 
     private SensorManager mSensorManager;
-    private Sensor mAccelerometer, mMagnetic;
+    private Sensor mAccelerometer;
     private User user = new User();
     private float[] mLastAccelerometer = new float[3];
     private DataPacket dataPacket = new DataPacket();
@@ -59,6 +46,7 @@ public class DataCollectionService extends Service implements SensorEventListene
     public static Runnable runnable = null;
     boolean isRunning = false;
     boolean hasInstantiatedListeners = false;
+    private final static int PACKET_SIZE = 20;
     /**
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
@@ -122,9 +110,7 @@ public class DataCollectionService extends Service implements SensorEventListene
         try {
                 mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
                 mAccelerometer=mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-                mMagnetic=mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
                 mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-                mSensorManager.registerListener(this, mMagnetic,  SensorManager.SENSOR_DELAY_NORMAL);
 
                 // alarmManager for zone detection
                 AlarmManager zoneAlarm=(AlarmManager) this.getApplicationContext().getSystemService(Context.ALARM_SERVICE);
@@ -145,7 +131,7 @@ public class DataCollectionService extends Service implements SensorEventListene
         Sensor sensor = event.sensor;
 //        Log.i(o, "Service sensor changed");
 
-        if(accelerometerStatsArrayList.size() > 5)
+        if(accelerometerStatsArrayList.size() > PACKET_SIZE)
         {
             dataPacket.setUser(user);
             dataPacket.setAccelerometerStats(accelerometerStatsArrayList);
