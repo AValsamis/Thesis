@@ -17,6 +17,7 @@ import uoa.di.gr.thesis.interfaces.RegisterZoneCallbacks;
 
 public class RegisterZone extends HandlerThread {
     protected final int SCAN_TIMES=10;
+    protected final int SCAN_INTERVAL=2000;
 
     private Handler mWorkerHandler;
     private Handler mResponseHandler;
@@ -61,7 +62,7 @@ public class RegisterZone extends HandlerThread {
         List<String> wifiNames = new ArrayList();
         for (int i = 0; i < SCAN_TIMES; i++) {
             try {
-                Thread.sleep(2000);
+                Thread.sleep(SCAN_INTERVAL);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -26,6 +26,7 @@ public class ZoneDetetectionService  extends Service {
 
     private final IBinder mBinder = new ZoneDetetectionService.LocalBinder();
     protected final int SCAN_TIMES=10;
+    protected final int SCAN_INTERVAL=2000;
 
     public class LocalBinder extends Binder {
         public ZoneDetetectionService getService() {
@@ -53,7 +54,7 @@ public class ZoneDetetectionService  extends Service {
                 List <String> wifiNames = new ArrayList();
                 for(int i = 0 ; i < SCAN_TIMES; i++) {
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(SCAN_INTERVAL);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
