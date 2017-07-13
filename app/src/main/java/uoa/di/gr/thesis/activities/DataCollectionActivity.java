@@ -34,7 +34,6 @@ public class DataCollectionActivity extends AppCompatActivity{
     @Override
     public void onCreate(Bundle icicle) {
 
-        Log.i("INSIDE DATACOLLECTION", "Hi");
         super.onCreate(icicle);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);

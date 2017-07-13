@@ -36,8 +36,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-       // StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-       // StrictMode.setThreadPolicy(policy);
         super.onCreate(savedInstanceState);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

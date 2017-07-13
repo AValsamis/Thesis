@@ -3,21 +3,17 @@ package uoa.di.gr.thesis.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import uoa.di.gr.thesis.R;
-import uoa.di.gr.thesis.database.RestApiDispenser;
 import uoa.di.gr.thesis.fragments.authenticate.LoginFragment;
 import uoa.di.gr.thesis.fragments.authenticate.SignupFragment;
 import uoa.di.gr.thesis.interfaces.LoginFragmentCallbacks;
 import uoa.di.gr.thesis.interfaces.SignupFragmentCallbacks;
-import uoa.di.gr.thesis.services.DataCollectionService;
 
 public class AuthenticationActivity  extends AppCompatActivity implements LoginFragmentCallbacks, SignupFragmentCallbacks {
     private static final String TAG="[AuthenticationActivity]";
@@ -31,10 +27,7 @@ public class AuthenticationActivity  extends AppCompatActivity implements LoginF
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Intent intent;
         if (preferences.getBoolean("log", false)) {
-            String username=preferences.getString("username","nobody");
             Boolean isElderly=preferences.getBoolean("iselderly",false);
-
-            Log.i("USERNAME",username);
 
             if(isElderly) {
                 startElderlyService();
@@ -88,7 +81,6 @@ public class AuthenticationActivity  extends AppCompatActivity implements LoginF
     public void onLoginSuccess() {
         fm.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String username=preferences.getString("username","nobody");
         Boolean isElderly=preferences.getBoolean("iselderly",false);
 
         Intent intent;
